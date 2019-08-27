@@ -1,0 +1,56 @@
+[
+   {
+      "restaurantName":"Tempete",
+      "address":"39 Rue des Petites Écuries, 75010 Paris",
+      "lat":48.8737820,
+      "long":2.3501670,
+      "ratings":[
+         {
+            "author":"Tommy",
+            "stars":4,
+            "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+         },
+         {
+            "author":"Carole",
+            "stars":5,
+            "comment":"Tout simplement mon restaurant préféré !"
+         }
+      ]
+   },
+    {
+       "restaurantName":"Bronco",
+       "address":"39 Rue des Petites Écuries, 75010 Paris",
+       "lat":48.8737815,
+       "long":2.3501649,
+       "ratings":[
+          {
+             "author":"Teddy",
+             "stars":4,
+             "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+          },
+          {
+             "author":"Anatole",
+             "stars":5,
+             "comment":"Tout simplement mon restaurant préféré !"
+          }
+       ]
+    },
+    {
+       "restaurantName":"Babalou",
+       "address":"4 Rue Lamarck, 75018 Paris",
+       "lat":48.8865035,
+       "long":2.3442197,
+       "ratings":[
+          {
+             "author":"Enma",
+             "stars":5,
+             "comment":"Une minuscule pizzeria délicieuse cachée juste à côté du Sacré choeur !"
+          },
+          {
+             "author":"Robin",
+             "stars":3,
+             "comment":"J'ai trouvé ça correct, sans plus"
+          }
+       ]
+    }
+ ]

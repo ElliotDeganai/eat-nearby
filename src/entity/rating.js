@@ -1,7 +1,7 @@
 class Rating{
-    constructor(stars, comment, author){
+    constructor(star, comment, author){
         this.author = author;
-        this.stars = stars;
+        this.star = star;
         this.comment = comment;
     }
 

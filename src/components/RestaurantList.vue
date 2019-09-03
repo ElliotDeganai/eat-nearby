@@ -1,48 +1,43 @@
 <template>
-  <div class="restaurant">
-      <li  v-bind:key="restaurant.name" v-for="restaurant in restaurantList">
-      {{ restaurant }}
+  <div class="restaurant bg-gray-200 rounded-lg">
+    <ul>
+      <li class="item-list"  v-bind:key="restaurant.name" v-for="restaurant in this.restaurants">
+      <h3>{{ restaurant.name }}</h3>
+      <p>{{ restaurant.address}}</p>
       </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import axios from '../../node_modules/@bundled-es-modules/axios/axios'
-import Restaurant from '../entity/restaurant';
-import Rating from '../entity/rating';
-import RestaurantList from '../entity/restaurantList';
-
-
+import store from './RestaurantsStore'
+import Vuex from 'vuex'
 
 export default {
+    store: store,
     data(){
         return{
-            restaurantList: RestaurantList.list,
-            listJson: Object
         }
     },
       mounted () {
-    axios
-      .get("http://localhost/eat-nearby/src/restaurant-list.json").then(response => {
-        this.listJson = response.data
-        for(let restaurant of this.listJson){
-          let restaurantToAdd = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long)
-        for(let rating of restaurant.ratings){
-            let ratingToAdd = new Rating(rating.stars, rating.comment, rating.author)
-            restaurantToAdd.ratings.push(ratingToAdd)
-        }
-        RestaurantList.list.push(restaurantToAdd)
-
-          //this.restaurantList.push(restaurantToAdd)
-
-        
-        }
-      })
-  }
+        this.loadJsonRestaurant()
+      },
+      methods: {
+        ...Vuex.mapActions([
+            'addRestaurant',
+            'addRestaurants',
+            'loadJsonRestaurant'
+        ]),
+      },
+      computed: {
+        ...Vuex.mapGetters([
+            'restaurants',
+            'restaurantsCount'
+        ]),
+      }
 }
 </script>
 
-<!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
 
 </style>

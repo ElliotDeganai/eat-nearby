@@ -1,21 +1,12 @@
 <template>
   <div id="app">
-    <h1>Eat Nearby</h1>
-    <restaurant-list/>
-    <br>
-    <google-maps/>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import RestaurantList from './components/RestaurantList.vue'
-import GoogleMaps from './components/GoogleMaps.vue'
-
 export default {
-  name: 'app',
-  components: {
-    RestaurantList, GoogleMaps
-  }
+  name: 'app'
 }
 </script>
 

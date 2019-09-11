@@ -5,7 +5,7 @@
 @tailwind utilities;
 
 .item-list{
-    @apply border-b-2;
+    @apply border-t-2;
 }
 
 .item-list:hover{

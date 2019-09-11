@@ -4,19 +4,21 @@ class Restaurant{
         this.address = address;
         this.lat = lat;
         this.long = long;
+        this.streetViewUrl = "https://maps.googleapis.com/maps/api/streetview?key=AIzaSyAKy_eNWWf9MXRvRezeuA_WlHFTVproHl8&location=" + lat + "," + long + "&size=150x100"
         this.ratings = [];
+        this.averageRating = 0;
     }
     addRatings(rating){
         this.ratings.push(rating)
+        this.calculateAverageRating()
     }
 
     calculateAverageRating(){
-        let average = 0
+        let sumRatingsStars = 0
         for(let rating of this.ratings){
-            average = average + rating.star
+            sumRatingsStars = sumRatingsStars + rating.star
         }
-        average = average / (this.ratings.length + 1)
-        return average
+        this.averageRating = sumRatingsStars / (this.ratings.length)
     }
 
 

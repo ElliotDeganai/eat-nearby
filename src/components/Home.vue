@@ -9,12 +9,14 @@
 
 <script>
 import RestaurantList from './RestaurantList.vue'
-import Restaurant from './Restaurant.vue'
 import GoogleMaps from './GoogleMaps.vue'
 
 export default {
   components: {
-    RestaurantList, GoogleMaps, Restaurant
+    RestaurantList, GoogleMaps
+  },
+  methods: {
+    
   }
 }
 </script>

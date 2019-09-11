@@ -8,8 +8,7 @@ import VueRouter from 'vue-router'
 Vue.use(Vuex)
 
 Vue.use(VueResource)
-Vue.http.options.root = 'https://maps.googleapis.com/maps/api/streetview?size=400x400&location=40.720032,-73.988354&fov=90&heading=235&pitch=10'
-Vue.http.headers.common['Authorization'] = 'AIzaSyAKy_eNWWf9MXRvRezeuA_WlHFTVproHl8'
+Vue.http.options.root = 'https://maps.googleapis.com/maps/api/streetview?key=AIzaSyAKy_eNWWf9MXRvRezeuA_WlHFTVproHl8'
 
 
 

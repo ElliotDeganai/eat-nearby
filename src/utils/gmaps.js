@@ -36,6 +36,5 @@ export default function init() {
   script.src = `https://maps.googleapis.com/maps/api/js?key=${API_KEY}&callback=${CALLBACK_NAME}`;
   script.onerror = rejectInitPromise;
   document.querySelector('head').appendChild(script);
-
   return initPromise;
 }

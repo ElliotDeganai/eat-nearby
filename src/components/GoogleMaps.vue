@@ -10,7 +10,10 @@
 <script>
 import gmapsInit from "../utils/gmaps"
 import store from './RestaurantsStore'
+import Restaurant from '../entity/restaurant';
+import Rating from '../entity/rating';
 import Vuex from 'vuex'
+import axios from 'axios'
 import { setTimeout } from 'timers';
 
 export default {
@@ -41,7 +44,12 @@ export default {
             'addRestaurants',
             'loadJsonRestaurant',
             'changeRestaurantFocus',
-            'clearRestaurantFocus'
+            'clearRestaurantFocus',
+            'setScreenBound',
+            'clearRestaurants',
+            'setGoogle',
+            'setStarFrom',
+            'setStarTo'
         ]),
         getRestaurantByPosition(lat, lng){
           let restaurant = this.restaurant(lat, lng)
@@ -50,8 +58,38 @@ export default {
           }else{
             return null
           }
+        },
+        setAPIRestaurants(){
+         
+                  let listOfRestaurants = []
+        
+        axios.get("http://localhost/eat-nearby/src/restaurant-list.json").then(response => {
+            let jsonContent = response.data
+            for(let restaurant of jsonContent){
+              let restaurantToAdd = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long)
+            for(let rating of restaurant.ratings){
+                let ratingToAdd = new Rating(rating.stars, rating.comment, rating.author)
+                restaurantToAdd.addRatings(ratingToAdd)
+            }
+            let myLatlng = new this.google.maps.LatLng(restaurant.lat, restaurant.long)
+            if(this.screenBound.contains(myLatlng)){
+              listOfRestaurants.push(restaurantToAdd)
+            }
+                    
+            }
+            this.clearRestaurants()
+            this.addRestaurants(listOfRestaurants)
+        })
+        return listOfRestaurants
+      },
+      setRestaurants(list){
+        console.log(list)
+        let listTemp = []
+        for(let item of list){
+          listTemp.push(item)
         }
-
+        this.addRestaurants(listTemp)
+      }
       },
       computed: {
          ...Vuex.mapGetters([
@@ -59,7 +97,11 @@ export default {
             'restaurant',
             'restaurantsCount',
             'restaurantsByRating',
-            'restaurantFocus'
+            'restaurantFocus',
+            'screenBound',
+            'google',
+            'starFrom',
+            'starTo'
         ]),
       },
   async mounted() {
@@ -68,18 +110,20 @@ export default {
 this.locations = this.restaurantsPositions
       console.log(this.list)
       console.log(this.locations) */
+         let self = this
+  //console.log(self.setAPIRestaurants())
+              
 
     try {
-   
-   var self = this
       const google = await gmapsInit();
+
+            self.setGoogle(google)
+      console.log(self.google)
       const geocoder = new google.maps.Geocoder();
       const map = new google.maps.Map(this.$el, {disableDoubleClickZoom: false});
-      
+
       var uluru = {lat: -25.344, lng: 131.036}
       console.log(uluru)
-      console.log(this.list)
-      console.log(this.locations)
     
       let infoWindow = new google.maps.InfoWindow();
 
@@ -87,6 +131,14 @@ this.locations = this.restaurantsPositions
         if (status !== "OK" || !results[0]) {
           throw new Error(status);
         }
+        map.fitBounds(results[0].geometry.viewport);
+        let boundsMap = map.getBounds()
+console.log(map.getBounds())
+self.setScreenBound(boundsMap)
+//self.loadJsonRestaurant()
+self.setAPIRestaurants()
+console.log(self.restaurants)
+//console.log(boundsMap)
 
         //this.locations = RestaurantList.getListOfLocations(RestaurantList.list);
 
@@ -117,19 +169,26 @@ this.locations = this.restaurantsPositions
           map.setCenter(pos);
         });
 
+
+
+
         //map.setCenter(results[0].geometry.location);
-        map.fitBounds(results[0].geometry.viewport);
+        //map.fitBounds(results[0].geometry.viewport);
 /*       console.log(JSON.parse(JSON.stringify(this.list)))
       console.log(JSON.parse(JSON.stringify(this.locations)))
       console.log(this.list) */
 
 
-var timeout = setTimeout(function(){}, 2000)
+
+//var timeout = setTimeout(function(){}, 2000)
 console.log(map.getCenter())
 console.log(map.getBounds())
-let boundsMap = map.getBounds()
-console.log(boundsMap)
-console.log(boundsMap)
+
+//let boundsMap = map.getBounds()
+//this.setScreenBound(boundsMap)
+
+      console.log(boundsMap)
+
       //let coordList = JSON.parse(JSON.stringify(this.locations))
 /*               for(let coord of coordList){
                 console.log(coord)
@@ -140,28 +199,47 @@ console.log(boundsMap)
           self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat, marker.getPosition().lng))
         });
       }  */
-               for(let restaurantForLocations of this.restaurants){
+      //self.loadJsonRestaurant()
+                    
+      map.addListener('bounds_changed', function(){
+        let tempBoundsMap = map.getBounds()
+        self.setScreenBound(tempBoundsMap)
+        //self.loadJsonRestaurant()
+        self.setAPIRestaurants()
+
+            console.log(self.restaurants)
+               for(let restaurantForLocations of self.restaurants){
                 console.log(restaurantForLocations)
-                var location = {lat: restaurantForLocations.lat, lng: restaurantForLocations.long}
-        let marker = new google.maps.Marker({position: location, map: map});
+                let location = {lat: restaurantForLocations.lat, lng: restaurantForLocations.long}
+        let marker = new self.google.maps.Marker({position: location, map: map});
           google.maps.event.addListener(marker, 'click', function() {
-          console.log(marker.getPosition().lat());
-          console.log(marker.getPosition().lng());
-          console.log(marker);
-          console.log(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()));
-          self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))
-          console.log(boundsMap.contains(marker.getPosition()))
-          
+          self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))          
         });
-        console.log(marker.getPosition())
-        console.log(map.getCenter())
-        console.log(boundsMap.contains(marker.getPosition()))
-      }
+}
+        
       });
+
+
+
+      //console.log(boundsMap.contains(marker.getPosition()))
+      
+      });
+
+            console.log(self.restaurants)
+               for(let restaurantForLocations of self.restaurants){
+                console.log(restaurantForLocations)
+                let location = {lat: restaurantForLocations.lat, lng: restaurantForLocations.long}
+        let marker = new this.google.maps.Marker({position: location, map: map});
+          google.maps.event.addListener(marker, 'click', function() {
+          self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))          
+        });
+}
+
       console.log(map.getCenter())
     } catch (error) {
       //console.error(error);
     }
+    console.log(self.restaurants)
   }
 };
 </script>

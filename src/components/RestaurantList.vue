@@ -35,7 +35,7 @@
     <div>
         <ul>
             <div>
-              <li class="item-list flex p-8"  v-bind:key="restaurant.name" v-for="restaurant in filteredRestaurants(starFrom, starTo)">
+              <li class="item-list flex p-8"  v-bind:key="restaurant.name" v-for="restaurant in filteredRestaurants(this.starFrom, this.starTo)">
                 <div>
                   <h3>{{ restaurant.name }}</h3>
                   <p>{{ restaurant.address}}</p>
@@ -82,13 +82,11 @@ export default {
     store: store,
     data(){
         return{
-          starFrom: 1,
-          starTo: 5
         }
     },
-      mounted () {
-        this.loadJsonRestaurant()
-      },
+      //mounted () {
+        //this.loadJsonRestaurant()
+      //},
       methods: {
         ...Vuex.mapActions([
             'addRestaurant',
@@ -111,7 +109,9 @@ export default {
             'restaurant',
             'restaurantsCount',
             'restaurantsByRating',
-            'restaurantFocus'
+            'restaurantFocus',
+            'starFrom',
+            'starTo'
         ]),
 
       }

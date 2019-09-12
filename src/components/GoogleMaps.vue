@@ -111,6 +111,7 @@ this.locations = this.restaurantsPositions
       console.log(this.list)
       console.log(this.locations) */
          let self = this
+         let markers = [];
   //console.log(self.setAPIRestaurants())
               
 
@@ -205,17 +206,25 @@ console.log(map.getBounds())
         let tempBoundsMap = map.getBounds()
         self.setScreenBound(tempBoundsMap)
         //self.loadJsonRestaurant()
+        for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        markers = []
         self.setAPIRestaurants()
 
-            console.log(self.restaurants)
-               for(let restaurantForLocations of self.restaurants){
+            console.log(self.restaurantsByRating(self.starFrom, self.starTo))
+            
+               for(let restaurantForLocations of self.restaurantsByRating(self.starFrom, self.starTo)){
                 console.log(restaurantForLocations)
                 let location = {lat: restaurantForLocations.lat, lng: restaurantForLocations.long}
         let marker = new self.google.maps.Marker({position: location, map: map});
+        
+        markers.push(marker)
           google.maps.event.addListener(marker, 'click', function() {
           self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))          
         });
 }
+console.log(markers)
         
       });
 

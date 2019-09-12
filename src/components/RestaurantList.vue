@@ -93,7 +93,9 @@ export default {
             'addRestaurants',
             'loadJsonRestaurant',
             'changeRestaurantFocus',
-            'clearRestaurantFocus'
+            'clearRestaurantFocus',
+            'setStarFrom',
+            'setStarTo'
         ]),
         filteredRestaurants(starFrom, starTo){
             if(starFrom <= starTo){
@@ -113,7 +115,23 @@ export default {
             'starFrom',
             'starTo'
         ]),
-
+        starFrom: {
+          get() {
+            return this.$store.state.starFrom
+          },
+          set(value) {
+            this.setStarFrom(value)
+          }
+        },
+        starTo: {
+          get() {
+            return this.$store.state.starTo
+          },
+          set(value) {
+            this.setStarTo(value)
+          }
+        }
+      
       }
 }
 </script>

@@ -63,7 +63,7 @@ export default {
          
                   let listOfRestaurants = []
         
-        axios.get("http://localhost/eat-nearby/src/restaurant-list.json").then(response => {
+        axios.get("http://localhost/eat-nearby/src/data/restaurant-list.json").then(response => {
             let jsonContent = response.data
             for(let restaurant of jsonContent){
               let restaurantToAdd = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long)

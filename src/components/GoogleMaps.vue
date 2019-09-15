@@ -9,7 +9,8 @@
 
 <script>
 import gmapsInit from "../utils/gmaps"
-import store from './RestaurantsStore'
+//import store from './RestaurantsStore'
+import store from '../store/index'
 import Restaurant from '../entity/restaurant';
 import Rating from '../entity/rating';
 import Vuex from 'vuex'
@@ -48,6 +49,7 @@ export default {
             'setScreenBound',
             'clearRestaurants',
             'setGoogle',
+            'setMapsCenter',
             'setStarFrom',
             'setStarTo'
         ]),
@@ -100,6 +102,7 @@ export default {
             'restaurantFocus',
             'screenBound',
             'google',
+            'mapsCenter',
             'starFrom',
             'starTo'
         ]),
@@ -111,7 +114,9 @@ this.locations = this.restaurantsPositions
       console.log(this.list)
       console.log(this.locations) */
          let self = this
+         
          let markers = [];
+         
   //console.log(self.setAPIRestaurants())
               
 
@@ -122,6 +127,11 @@ this.locations = this.restaurantsPositions
       console.log(self.google)
       const geocoder = new google.maps.Geocoder();
       const map = new google.maps.Map(this.$el, {disableDoubleClickZoom: false});
+
+              for (var i = 0; i < markers.length; i++) {
+          markers[i].setMap(null);
+        }
+        markers = []
 
       var uluru = {lat: -25.344, lng: 131.036}
       console.log(uluru)
@@ -159,6 +169,11 @@ console.log(self.restaurants)
             lng: position.coords.longitude
           };  
 
+          if(self.mapsCenter === null){
+            self.setMapsCenter(pos)
+          }
+          
+
             //navigator.geolocation.getCurrentPosition(function(position) {
           //var pos = {lat: -25.344, lng: 131.036}; 
 
@@ -167,7 +182,7 @@ console.log(self.restaurants)
           var markerPosition = new google.maps.Marker({position: pos, map: map, icon: image});
            infoWindow.setPosition(pos);
           infoWindow.setContent("Here you are!");
-          map.setCenter(pos);
+          map.setCenter(self.mapsCenter);
         });
 
 
@@ -221,7 +236,10 @@ console.log(map.getBounds())
         
         markers.push(marker)
           google.maps.event.addListener(marker, 'click', function() {
-          self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))          
+          self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))
+          let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
+          map.setCenter(latLngCenter)  
+          self.setMapsCenter(latLngCenter)        
         });
 }
 console.log(markers)

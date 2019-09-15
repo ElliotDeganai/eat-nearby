@@ -53,15 +53,19 @@
     <div>
       <button v-on:click="this.clearRestaurantFocus">Revenir à la liste</button>
     </div>
+  <div>
+    <router-link :to="{name: 'restaurant'}" class="">Voir les détails du restaurant</router-link>
+  </div>
     <h1> {{ this.restaurantFocus[0].name }} </h1>
     <p> {{ this.restaurantFocus[0].address }} </p>
     <p> {{ this.restaurantFocus[0].averageRating }} </p>
     <p>  </p>
     <div>
-      <img v-bind:src="restaurantFocus[0].streetViewUrl"/>
+      <img v-bind:src="this.restaurantFocus[0].streetViewUrl"/>
     </div>
     <div>
       <ul>
+        <h3>Commentaires</h3>
         <li class="item-list p-8"  v-bind:key="restaurantUnic.name" v-for="restaurantUnic in this.restaurantFocus[0].ratings">
           <h4> {{ restaurantUnic.author }} </h4>
           <p> {{ restaurantUnic.comment }} </p>
@@ -74,7 +78,8 @@
 </template>
 
 <script>
-import store from './RestaurantsStore'
+//import store from './RestaurantsStore'
+import store from '../store/index'
 import Vuex from 'vuex'
 import { setTimeout } from 'timers';
 

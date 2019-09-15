@@ -28,6 +28,11 @@ const router = new VueRouter({
     path: '/',
     components: require('./components/Home.vue'),
     name: 'root'
+  },
+  {
+    path: '/PageRestaurant',
+    components: require('./components/Restaurant.vue'),
+    name: 'restaurant'
   }]
 })
 

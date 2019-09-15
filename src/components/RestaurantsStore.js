@@ -5,9 +5,6 @@ import Restaurant from '../entity/restaurant';
 import Rating from '../entity/rating';
 import gmapsInit from "../utils/gmaps"
 
-
-
-
 const state = {
     restaurants: [],
     restaurantFocus: null,
@@ -71,7 +68,7 @@ const actions = {
     loadJsonRestaurant: (store) => {
         let listOfRestaurants = []
         
-        axios.get("http://localhost/eat-nearby/src/restaurant-list.json").then(response => {
+        axios.get("http://localhost/eat-nearby/src/data/restaurant-list.json").then(response => {
             let jsonContent = response.data
             store.state.restaurants = []
             for(let restaurant of jsonContent){
@@ -80,10 +77,9 @@ const actions = {
                 let ratingToAdd = new Rating(rating.stars, rating.comment, rating.author)
                 restaurantToAdd.addRatings(ratingToAdd)
             }
-            let myLatlng = new state.google.maps.LatLng(restaurant.lat, restaurant.long)
-            console.log(state.screenBound)
-            listOfRestaurants.push(restaurantToAdd)        
-            }
+            if(this.screenBound.contains(myLatlng)){
+                listOfRestaurants.push(restaurantToAdd)
+              }}
             
             
             store.commit('ADD_RESTAURANTS', listOfRestaurants)

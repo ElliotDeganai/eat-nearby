@@ -1,22 +1,4 @@
 [
-   {
-      "restaurantName":"Tempete",
-      "address":"39 Rue des Petites Écuries, 75010 Paris",
-      "lat":48.8737820,
-      "long":2.3501670,
-      "ratings":[
-         {
-            "author":"Tommy",
-            "stars":4,
-            "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
-         },
-         {
-            "author":"Carole",
-            "stars":5,
-            "comment":"Tout simplement mon restaurant préféré !"
-         }
-      ]
-   },
     {
        "restaurantName":"Bronco",
        "address":"39 Rue des Petites Écuries, 75010 Paris",

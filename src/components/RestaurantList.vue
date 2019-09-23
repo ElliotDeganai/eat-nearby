@@ -35,7 +35,7 @@
     <div>
         <ul>
             <div>
-              <li class="item-list flex p-8"  v-bind:key="restaurant.name" v-for="restaurant in filteredRestaurants(this.starFrom, this.starTo)">
+              <li class="item-list flex p-8"  v-bind:key="restaurant.name" v-for="restaurant in this.filteredRestaurants(this.starFrom, this.starTo)">
                 <div>
                   <h3>{{ restaurant.name }}</h3>
                   <p>{{ restaurant.address}}</p>
@@ -67,9 +67,24 @@
       <ul>
         <h3>Commentaires</h3>
         <li class="item-list p-8"  v-bind:key="restaurantUnic.name" v-for="restaurantUnic in this.restaurantFocus[0].ratings">
-          <h4> {{ restaurantUnic.author }} </h4>
+          <h4 > {{ restaurantUnic.author }} </h4>
           <p> {{ restaurantUnic.comment }} </p>
           <p> {{ restaurantUnic.star }} </p>
+        </li>
+        <li class="newComment">
+          <div><input v-model="newPseudo" type="text" placeholder="Entrez votre pseudo..."/></div>
+          <div><input v-model="newComment" type="textarea" placeholder="Entrez votre commentaire..."/></div>
+          <div><select v-model="newRating" class="" id="">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+          </div>
+          <div>
+            <button v-on:click.prevent="addReview()">Ajouter un commentaire</button>
+          </div>
         </li>
       </ul>
     </div>
@@ -82,11 +97,16 @@
 import store from '../store/index'
 import Vuex from 'vuex'
 import { setTimeout } from 'timers';
+import Restaurant from '../entity/restaurant.js';
+import Rating from '../entity/rating';
 
 export default {
     store: store,
     data(){
         return{
+          newPseudo: '',
+          newComment: '',
+          newRating: ''
         }
     },
       //mounted () {
@@ -95,37 +115,96 @@ export default {
       methods: {
         ...Vuex.mapActions([
             'addRestaurant',
+            'destroyRestaurant',
+            'addRestaurantJson',
             'addRestaurants',
+            'addRestaurantsJson',
             'loadJsonRestaurant',
             'changeRestaurantFocus',
             'clearRestaurantFocus',
+            'setScreenBound',
+            'clearRestaurants',
+            'clearRestaurantsJson',
+            'clearMarkers',
+            'setMarkers',
+            'setMarker',
+            'setGoogle',
+            'setMapsCenter',
             'setStarFrom',
-            'setStarTo'
+            'setStarTo',
+            'incrementCounterRestaurants',
+            'destroyAllMarkers',
+            'destroyMarkersOutbound',
+            'destroyMarker',
+            'incrementCounterRestaurants',
+            'addComment'
         ]),
         filteredRestaurants(starFrom, starTo){
             if(starFrom <= starTo){
-                return this.restaurantsByRating(starFrom, starTo)
+                return this.restaurantsByRating(Number(starFrom), Number(starTo))
             }else{
                 return this.restaurants
             }
-        }        
-      },
+        },
+         addReview(){
+          if(this.newPseudo !== '' && this.newComment !== '' && this.newRating !== ''){
+            let ratingToAdd = new Rating(this.newRating, this.newComment, this.newPseudo)
+            this.addComment(ratingToAdd)
+          }
+          this.newPseudo = ''
+          this.newComment = ''
+          this.newRating = ''
+        }       
+      }, 
       computed: {
         ...Vuex.mapGetters([
             'restaurants',
+            'restaurantsJson',
+            'restaurantsVisibles',
             'restaurant',
+            'restaurantJson',
             'restaurantsCount',
+            'restaurantsJsonCount',
             'restaurantsByRating',
+            'restaurantsJsonByRating',
             'restaurantFocus',
+            'screenBound',
+            'google',
+            'markers',
+            'mapsCenter',
             'starFrom',
-            'starTo'
+            'starTo',
+            'counterRestaurants'
         ]),
         starFrom: {
           get() {
             return this.$store.state.starFrom
           },
           set(value) {
-            this.setStarFrom(value)
+            let self = this
+            this.setStarFrom(Number(value))
+            let listOfRestaurants = []
+            for(let restaurant of this.restaurantsJsonByRating(Number(self.starFrom), Number(self.starTo))){
+
+            let myLatlng = new this.google.maps.LatLng(restaurant.lat, restaurant.long)
+            if(this.screenBound.contains(myLatlng)){
+              listOfRestaurants.push(restaurant)
+            }
+                    
+            }
+
+
+          for (var i = 0; i < self.markers.length; i++ ) {
+          let myLatlng = new self.google.maps.LatLng(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
+          let restaurantToRemove = self.restaurant(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
+          if((!self.screenBound.contains(myLatlng)) || restaurantToRemove.averageRating < self.starFrom || restaurantToRemove.averageRating > self.starTo){
+           self.destroyMarker(i)
+           self.destroyRestaurant(restaurantToRemove)
+          }
+        }
+        this.clearMarkers()
+            this.clearRestaurants()
+            this.addRestaurants(listOfRestaurants)
           }
         },
         starTo: {
@@ -133,9 +212,32 @@ export default {
             return this.$store.state.starTo
           },
           set(value) {
-            this.setStarTo(value)
+            this.setStarTo(Number(value))
+            let listOfRestaurants = []
+            for(let restaurant of this.restaurantsJsonByRating(Number(self.starFrom), Number(self.starTo))){
+
+            let myLatlng = new this.google.maps.LatLng(restaurant.lat, restaurant.long)
+            if(this.screenBound.contains(myLatlng)){
+              listOfRestaurants.push(restaurant)
+            }
+                    
+            }
+
+
+          for (var i = 0; i < self.markers.length; i++ ) {
+          let myLatlng = new self.google.maps.LatLng(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
+          let restaurantToRemove = self.restaurant(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
+          if((!self.screenBound.contains(myLatlng)) || restaurantToRemove.averageRating < self.starFrom || restaurantToRemove.averageRating > self.starTo){
+           self.destroyMarker(i)
+           self.destroyRestaurant(restaurantToRemove)
           }
         }
+        this.clearMarkers()
+
+            this.clearRestaurants()
+            this.addRestaurants(listOfRestaurants)
+          }
+        },
       
       }
 }

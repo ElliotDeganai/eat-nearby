@@ -8,12 +8,15 @@ Vue.use(Vuex)
 
 const state = {
     restaurants: [],
+    restaurantsJson: [],
     restaurantFocus: null,
     screenBound: null,
     google: null,
     mapsCenter: null,
+    markers: [],
     starFrom: 1,
-    starTo: 5
+    starTo: 5,
+    counterRestaurants: 0
 }
 
 

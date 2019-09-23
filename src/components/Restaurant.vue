@@ -20,6 +20,21 @@
           <p> {{ rating.comment }} </p>
           <p> {{ rating.star }} </p>
         </li>
+        <li class="newComment">
+          <div><input v-model="newPseudo" type="text" placeholder="Entrez votre pseudo..."/></div>
+          <div><input v-model="newComment" type="textarea" placeholder="Entrez votre commentaire..."/></div>
+          <div><select v-model="newRating" class="" id="">
+            <option>1</option>
+            <option>2</option>
+            <option>3</option>
+            <option>4</option>
+            <option>5</option>
+          </select>
+          </div>
+          <div>
+            <button v-on:click.prevent="addComment()">Ajouter un commentaire</button>
+          </div>
+        </li>
       </ul>
     </div>
     <div><router-link :to="{name: 'root'}" class="">Retour à la liste</router-link></div>
@@ -28,6 +43,7 @@
 
 <script>
 import Restaurant from '../entity/restaurant.js';
+import Rating from '../entity/rating';
 import store from '../store/index'
 import Vuex from 'vuex'
 
@@ -35,7 +51,34 @@ export default {
   store: store,
     data(){
         return{
+          newPseudo: '',
+          newComment: '',
+          newRating: ''
         }
+    },
+    methods: {
+      ...Vuex.mapActions([
+          'addRestaurant',
+          'addComment',
+          'addRestaurants',
+          'loadJsonRestaurant',
+          'changeRestaurantFocus',
+          'clearRestaurantFocus',
+          'setStarFrom',
+          'setStarTo'
+      ]),
+        addRating(){
+          let restaurant
+          if(this.newPseudo !== '' && this.newComment !== '' && this.newRating !== ''){
+            let ratingToAdd = new Rating(this.newRating, this.newComment, this.newPseudo)
+            //this.addComment(this.restaurantFocus[0].lat, this.restaurantFocus[0].long, ratingToAdd)
+            restaurant = this.restaurant(this.restaurantFocus[0].lat, this.restaurantFocus[0].long)[0]
+            let indexRestaurant = this.restaurants.indexOf(restaurant);
+          }
+          this.newPseudo = ''
+          this.newComment = ''
+          this.newRating = ''
+        } 
     },
     computed: {
       ...Vuex.mapGetters([
@@ -45,7 +88,8 @@ export default {
           'restaurantsByRating',
           'restaurantFocus',
           'starFrom',
-          'starTo'
+          'starTo',
+          'counterRestaurants'
       ]),
     }
 }

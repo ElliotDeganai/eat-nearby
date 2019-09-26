@@ -22,10 +22,7 @@ export const ADD_RESTAURANT = (state, restaurant) => {
     }
     export const ADD_RESTAURANTS_JSON = (state, restaurants) => {
         for(let restaurant of restaurants){
-            //let myLatlng = new google.maps.LatLng(restaurant.lat, restaurant.long)
-            //if(state.screenBound.contains(myLatlng)){
             state.restaurantsJson.push(restaurant)
-            //}
         }
     }
     export const ADD_RATING = (state, index, rating) => {

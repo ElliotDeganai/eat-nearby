@@ -94,6 +94,7 @@
 
 <script>
 //import store from './RestaurantsStore'
+import { createNamespacedHelpers } from 'vuex'
 import store from '../store/index'
 import Vuex from 'vuex'
 import { setTimeout } from 'timers';
@@ -113,7 +114,7 @@ export default {
         //this.loadJsonRestaurant()
       //},
       methods: {
-        ...Vuex.mapActions([
+        ...Vuex.mapActions('restaurant', [
             'addRestaurant',
             'destroyRestaurant',
             'addRestaurantJson',
@@ -122,22 +123,22 @@ export default {
             'loadJsonRestaurant',
             'changeRestaurantFocus',
             'clearRestaurantFocus',
-            'setScreenBound',
             'clearRestaurants',
             'clearRestaurantsJson',
+            'setStarFrom',
+            'setStarTo',
+            'incrementCounterRestaurants'
+        ]),
+        ...Vuex.mapActions('map', [
+            'setScreenBound',
             'clearMarkers',
             'setMarkers',
             'setMarker',
             'setGoogle',
             'setMapsCenter',
-            'setStarFrom',
-            'setStarTo',
-            'incrementCounterRestaurants',
             'destroyAllMarkers',
             'destroyMarkersOutbound',
-            'destroyMarker',
-            'incrementCounterRestaurants',
-            'addComment'
+            'destroyMarker'
         ]),
         filteredRestaurants(starFrom, starTo){
             if(starFrom <= starTo){
@@ -157,7 +158,7 @@ export default {
         }       
       }, 
       computed: {
-        ...Vuex.mapGetters([
+        ...Vuex.mapGetters('restaurant', [
             'restaurants',
             'restaurantsJson',
             'restaurantsVisibles',
@@ -168,13 +169,15 @@ export default {
             'restaurantsByRating',
             'restaurantsJsonByRating',
             'restaurantFocus',
+            'starFrom',
+            'starTo',
+            'counterRestaurants'
+        ]),
+        ...Vuex.mapGetters('map', [
             'screenBound',
             'google',
             'markers',
             'mapsCenter',
-            'starFrom',
-            'starTo',
-            'counterRestaurants'
         ]),
         starFrom: {
           get() {

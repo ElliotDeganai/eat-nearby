@@ -41,7 +41,7 @@ export default {
     }
   },
       methods: {
-        ...Vuex.mapActions([
+        ...Vuex.mapActions('restaurant', [
             'addRestaurant',
             'destroyRestaurant',
             'addRestaurantJson',
@@ -50,17 +50,19 @@ export default {
             'loadJsonRestaurant',
             'changeRestaurantFocus',
             'clearRestaurantFocus',
-            'setScreenBound',
             'clearRestaurants',
             'clearRestaurantsJson',
+            'setStarFrom',
+            'setStarTo',
+            'incrementCounterRestaurants'
+        ]),
+        ...Vuex.mapActions('map', [
+            'setScreenBound',
             'clearMarkers',
             'setMarkers',
             'setMarker',
             'setGoogle',
             'setMapsCenter',
-            'setStarFrom',
-            'setStarTo',
-            'incrementCounterRestaurants',
             'destroyAllMarkers',
             'destroyMarkersOutbound',
             'destroyMarker'
@@ -108,7 +110,7 @@ export default {
             this.addRestaurants(listOfRestaurants)
       },
       EventBoundChanged(map){       
-        self = this
+        let self = this
         map.addListener('bounds_changed', function(){
         let tempBoundsMap = map.getBounds()
         self.setScreenBound(tempBoundsMap)
@@ -140,7 +142,7 @@ export default {
   if(markerExist === false){
         self.setMarker(marker)
   }
-  console.log(map.markers)
+  //console.log(map.markers)
 }
       });
       },
@@ -213,7 +215,7 @@ export default {
       }
       },
       computed: {
-         ...Vuex.mapGetters([
+        ...Vuex.mapGetters('restaurant', [
             'restaurants',
             'restaurantsJson',
             'restaurantsVisibles',
@@ -224,12 +226,15 @@ export default {
             'restaurantsByRating',
             'restaurantsJsonByRating',
             'restaurantFocus',
+            'starFrom',
+            'starTo',
+            'counterRestaurants'
+        ]),
+        ...Vuex.mapGetters('map', [
             'screenBound',
             'google',
             'markers',
             'mapsCenter',
-            'starFrom',
-            'starTo'
         ]),
       },
   async mounted() {

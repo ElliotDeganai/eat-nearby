@@ -1,5 +1,22 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
+import restaurant from './modules/restaurant'
+import map from './modules/map'
+
+Vue.use(Vuex)
+
+const debug = process.env.NODE_ENV !== 'production'
+
+export default new Vuex.Store({
+  modules: {
+    map,
+    restaurant
+  },
+  strict: debug
+})
+
+/* import Vue from 'vue'
+import Vuex from 'vuex'
 import * as getters from './getters'
 import * as actions from './actions'
 import * as mutations from './mutations'
@@ -44,4 +61,4 @@ let store = new Vuex.Store({
 
 global.store = store
 
-export default store
+export default store */

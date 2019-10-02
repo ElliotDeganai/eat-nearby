@@ -56,17 +56,17 @@
   <div>
     <router-link :to="{name: 'restaurant'}" class="">Voir les détails du restaurant</router-link>
   </div>
-    <h1> {{ this.restaurantFocus[0].name }} </h1>
-    <p> {{ this.restaurantFocus[0].address }} </p>
-    <p> {{ this.restaurantFocus[0].averageRating }} </p>
+    <h1> {{ this.restaurantFocus.name }} </h1>
+    <p> {{ this.restaurantFocus.address }} </p>
+    <p> {{ this.restaurantFocus.averageRating }} </p>
     <p>  </p>
     <div>
-      <img v-bind:src="this.restaurantFocus[0].streetViewUrl"/>
+      <img v-bind:src="this.restaurantFocus.streetViewUrl"/>
     </div>
     <div>
       <ul>
         <h3>Commentaires</h3>
-        <li class="item-list p-8"  v-bind:key="restaurantUnic.name" v-for="restaurantUnic in this.restaurantFocus[0].ratings">
+        <li class="item-list p-8"  v-bind:key="restaurantUnic.name" v-for="restaurantUnic in this.restaurantFocus.ratings">
           <h4 > {{ restaurantUnic.author }} </h4>
           <p> {{ restaurantUnic.comment }} </p>
           <p> {{ restaurantUnic.star }} </p>
@@ -114,7 +114,7 @@ export default {
         //this.loadJsonRestaurant()
       //},
       methods: {
-        ...Vuex.mapActions('restaurant', [
+        ...Vuex.mapActions([
             'addRestaurant',
             'destroyRestaurant',
             'addRestaurantJson',
@@ -127,9 +127,7 @@ export default {
             'clearRestaurantsJson',
             'setStarFrom',
             'setStarTo',
-            'incrementCounterRestaurants'
-        ]),
-        ...Vuex.mapActions('map', [
+            'incrementCounterRestaurants',
             'setScreenBound',
             'clearMarkers',
             'setMarkers',
@@ -141,7 +139,7 @@ export default {
             'destroyMarker'
         ]),
         filteredRestaurants(starFrom, starTo){
-            if(starFrom <= starTo){
+            if(starFrom <= starTo && this.restaurantsCount !== 0){
                 return this.restaurantsByRating(Number(starFrom), Number(starTo))
             }else{
                 return this.restaurants
@@ -155,13 +153,15 @@ export default {
           this.newPseudo = ''
           this.newComment = ''
           this.newRating = ''
-        }       
+        },       
+      },
+      mounted(){
+          console.log(this.restaurantFocus)
       }, 
       computed: {
-        ...Vuex.mapGetters('restaurant', [
+        ...Vuex.mapGetters([
             'restaurants',
             'restaurantsJson',
-            'restaurantsVisibles',
             'restaurant',
             'restaurantJson',
             'restaurantsCount',
@@ -171,9 +171,7 @@ export default {
             'restaurantFocus',
             'starFrom',
             'starTo',
-            'counterRestaurants'
-        ]),
-        ...Vuex.mapGetters('map', [
+            'counterRestaurants',
             'screenBound',
             'google',
             'markers',
@@ -186,61 +184,17 @@ export default {
           set(value) {
             let self = this
             this.setStarFrom(Number(value))
-            let listOfRestaurants = []
-            for(let restaurant of this.restaurantsJsonByRating(Number(self.starFrom), Number(self.starTo))){
-
-            let myLatlng = new this.google.maps.LatLng(restaurant.lat, restaurant.long)
-            if(this.screenBound.contains(myLatlng)){
-              listOfRestaurants.push(restaurant)
-            }
-                    
-            }
-
-
-          for (var i = 0; i < self.markers.length; i++ ) {
-          let myLatlng = new self.google.maps.LatLng(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
-          let restaurantToRemove = self.restaurant(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
-          if((!self.screenBound.contains(myLatlng)) || restaurantToRemove.averageRating < self.starFrom || restaurantToRemove.averageRating > self.starTo){
-           self.destroyMarker(i)
-           self.destroyRestaurant(restaurantToRemove)
-          }
         }
-        this.clearMarkers()
-            this.clearRestaurants()
-            this.addRestaurants(listOfRestaurants)
           }
-        },
+        ,
         starTo: {
           get() {
             return this.$store.state.starTo
           },
           set(value) {
             this.setStarTo(Number(value))
-            let listOfRestaurants = []
-            for(let restaurant of this.restaurantsJsonByRating(Number(self.starFrom), Number(self.starTo))){
-
-            let myLatlng = new this.google.maps.LatLng(restaurant.lat, restaurant.long)
-            if(this.screenBound.contains(myLatlng)){
-              listOfRestaurants.push(restaurant)
-            }
-                    
-            }
-
-
-          for (var i = 0; i < self.markers.length; i++ ) {
-          let myLatlng = new self.google.maps.LatLng(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
-          let restaurantToRemove = self.restaurant(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
-          if((!self.screenBound.contains(myLatlng)) || restaurantToRemove.averageRating < self.starFrom || restaurantToRemove.averageRating > self.starTo){
-           self.destroyMarker(i)
-           self.destroyRestaurant(restaurantToRemove)
           }
         }
-        this.clearMarkers()
-
-            this.clearRestaurants()
-            this.addRestaurants(listOfRestaurants)
-          }
-        },
       
       }
 }

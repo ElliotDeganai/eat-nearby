@@ -57,7 +57,7 @@ export default {
         }
     },
     methods: {
-      ...Vuex.mapActions('restaurant', [
+      ...Vuex.mapActions([
           'addRestaurant',
           'addComment',
           'addRestaurants',
@@ -81,10 +81,9 @@ export default {
         } 
     },
     computed: {
-        ...Vuex.mapGetters('restaurant', [
+        ...Vuex.mapGetters([
             'restaurants',
             'restaurantsJson',
-            'restaurantsVisibles',
             'restaurant',
             'restaurantJson',
             'restaurantsCount',
@@ -94,9 +93,7 @@ export default {
             'restaurantFocus',
             'starFrom',
             'starTo',
-            'counterRestaurants'
-        ]),
-        ...Vuex.mapGetters('map', [
+            'counterRestaurants',
             'screenBound',
             'google',
             'markers',

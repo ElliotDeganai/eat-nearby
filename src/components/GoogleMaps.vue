@@ -37,15 +37,19 @@ export default {
         }
         // ...
       ],
+      locations: [],
+
       //markers: []
     }
   },
       methods: {
-        ...Vuex.mapActions('restaurant', [
+        ...Vuex.mapActions([
             'addRestaurant',
             'destroyRestaurant',
             'addRestaurantJson',
             'addRestaurants',
+            'setRestaurants',
+            'setRestaurantsAPI',
             'addRestaurantsJson',
             'loadJsonRestaurant',
             'changeRestaurantFocus',
@@ -54,18 +58,20 @@ export default {
             'clearRestaurantsJson',
             'setStarFrom',
             'setStarTo',
-            'incrementCounterRestaurants'
-        ]),
-        ...Vuex.mapActions('map', [
+            'incrementCounterRestaurants',
             'setScreenBound',
             'clearMarkers',
             'setMarkers',
             'setMarker',
             'setGoogle',
+            'setMap',
             'setMapsCenter',
             'destroyAllMarkers',
             'destroyMarkersOutbound',
-            'destroyMarker'
+            'destroyMarker',
+            'placeMarker',
+            'addEventBoundChanged',
+            'addEventClickMarker'
         ]),
         getRestaurantByPosition(lat, lng){
           let restaurant = this.restaurant(lat, lng)
@@ -75,98 +81,20 @@ export default {
             return null
           }
         },
-        setAPIRestaurants(){
-         
-                  let listOfRestaurants = []
-        
-        axios.get("http://localhost/eat-nearby/src/data/restaurant-list.json").then(response => {
-            let jsonContent = response.data
-            for(let restaurant of jsonContent){
-              let restaurantToAdd = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long)
-            for(let rating of restaurant.ratings){
-                let ratingToAdd = new Rating(rating.stars, rating.comment, rating.author)
-                restaurantToAdd.addRatings(ratingToAdd)
-            }
-              listOfRestaurants.push(restaurantToAdd)
-                    
-            }
-            this.clearRestaurantsJson()
-            this.addRestaurantsJson(listOfRestaurants)
-        })
-        return listOfRestaurants
-      },
-      setRestaurants(){
-         
-                  let listOfRestaurants = []
-            for(let restaurant of this.restaurantsJsonByRating(Number(self.starFrom), Number(self.starTo))){
-
-            let myLatlng = new this.google.maps.LatLng(restaurant.lat, restaurant.long)
-            if(this.screenBound.contains(myLatlng)){
-              listOfRestaurants.push(restaurant)
-            }
-                    
-            }
-            this.clearRestaurants()
-            this.addRestaurants(listOfRestaurants)
-      },
-      EventBoundChanged(map){       
+      eventClickMarker(){
         let self = this
-        map.addListener('bounds_changed', function(){
-        let tempBoundsMap = map.getBounds()
-        self.setScreenBound(tempBoundsMap)
-        self.removeAllMarkers()
-        //self.removeMarkersOutbounds()
-        //self.destroyMarkersOutbound()
-        self.setRestaurants()
-            
-               for(let restaurantForLocations of self.restaurants){
-                 let markerExist = false
-                //console.log(restaurantForLocations)
-                let location = {lat: restaurantForLocations.lat, lng: restaurantForLocations.long}
-        let marker = new self.google.maps.Marker({position: location, map: map});
-
-        for(let mark of self.markers){
-          if(marker.getPosition().lat() === mark.getPosition().lat() && marker.getPosition().lng() === mark.getPosition().lng()){
-            markerExist = true
-          }
-        }
-        //console.log(self.markers.includes(marker))
-  
-              self.google.maps.event.addListener(marker, 'click', function() {
-          self.changeRestaurantFocus(self.restaurant(marker.getPosition().lat(), marker.getPosition().lng()))
-          let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
-          map.setCenter(latLngCenter)  
-          self.setMapsCenter(latLngCenter)        
-        });
-
-  if(markerExist === false){
-        self.setMarker(marker)
-  }
-  //console.log(map.markers)
-}
-      });
+        let map = this.map
+        self.google.maps.event.addListener(map, 'click', function(event) {
+  let ratingToCreate = new Rating(3, "Popopo", "Dadju")
+  let latLngTest = new self.google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+  let restaurantToCreate = new Restaurant("Couscous", "17 rue de la Paroisse, 77500", Number(latLngTest.lat()), Number(latLngTest.lng()))
+  console.log(restaurantToCreate)
+  restaurantToCreate.addRatings(ratingToCreate)
+  self.addRestaurantJson(restaurantToCreate)
+   self.placeMarker(latLngTest, map, restaurantToCreate);
+})
       },
-
-       removeAllMarkers() {
-         let self = this
-        for (var i = 0; i < self.markers.length; i++ ) {
-          self.destroyMarker(i)
-        }
-          //self.markers = [];
-      }, 
-       removeMarkersOutbounds() {
-        let self = this
-        for (var i = 0; i < self.markers.length; i++ ) {
-          let myLatlng = new self.google.maps.LatLng(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
-          let restaurantToRemove = self.getRestaurantByPosition(self.markers[i].getPosition().lat(), self.markers[i].getPosition().lng())
-          if((self.screenBound.contains(myLatlng) === false) || restaurantToRemove.averageRating < self.starFrom || restaurantToRemove.averageRating > self.starTo){
-           self.destroyMarker(i)
-           self.destroyRestaurant(restaurantToRemove)
-          }
-        }
-          //markers = [];
-      } ,
-      placeMarker(location, map, restaurantToPlace) {
+/*         placeMarker(location, map, restaurantToPlace) {
         let self = this
     let marker = new self.google.maps.Marker({
         position: location, 
@@ -180,45 +108,13 @@ export default {
             self.setMarker(marker)
             self.addRestaurant(restaurantToPlace)
             
-      },
-      openFormRestaurant(marker, map){
-                let contentString = `<div id="content">`+
-            `<div id="siteNotice">`+
-            `</div>`+
-            `<h1 id="firstHeading" class="firstHeading">Uluru</h1>`+
-            `<div id="bodyContent">`+
-            `<p><b>Uluru</b>, also referred to as <b>Ayers Rock</b>, is a large ` +
-            `sandstone rock formation in the southern part of the `+
-            `Northern Territory, central Australia. It lies 335&#160;km (208&#160;mi) `+
-            `south west of the nearest large town, Alice Springs; 450&#160;km `+
-            `(280&#160;mi) by road. Kata Tjuta and Uluru are the two major `+
-            `features of the Uluru - Kata Tjuta National Park. Uluru is `+
-            `sacred to the Pitjantjatjara and Yankunytjatjara, the `+
-            `Aboriginal people of the area. It has many springs, waterholes, `+
-            `rock caves and ancient paintings. Uluru is listed as a World `+
-            `Heritage Site.</p>`+
-            `<p>Attribution: Uluru, <a href="https://en.wikipedia.org/w/index.php?title=Uluru&oldid=297882194">`+
-            `https://en.wikipedia.org/w/index.php?title=Uluru</a> `+
-            `(last visited June 22, 2009).</p>`+
-            `</div>`+
-            `</div>`;
+      } ,  */
 
-        var infowindow = new this.google.maps.InfoWindow({
-          content: contentString
-        });
-
-        marker.addListener('click', function() {
-          infowindow.open(map, marker);
-        });
-
-
-      }
       },
       computed: {
-        ...Vuex.mapGetters('restaurant', [
+        ...Vuex.mapGetters([
             'restaurants',
             'restaurantsJson',
-            'restaurantsVisibles',
             'restaurant',
             'restaurantJson',
             'restaurantsCount',
@@ -228,18 +124,18 @@ export default {
             'restaurantFocus',
             'starFrom',
             'starTo',
-            'counterRestaurants'
-        ]),
-        ...Vuex.mapGetters('map', [
+            'counterRestaurants',
             'screenBound',
             'google',
+            'map',
             'markers',
             'mapsCenter',
         ]),
       },
   async mounted() {
          let self = this
-    self.removeAllMarkers()
+    //self.removeAllMarkers()
+    self.destroyAllMarkers()
               
     try {
       const google = await gmapsInit();
@@ -247,8 +143,10 @@ export default {
             self.setGoogle(google)
       const geocoder = new google.maps.Geocoder();
       const map = new google.maps.Map(this.$el, {disableDoubleClickZoom: false});
+      self.setMap(map)
 
-    self.removeAllMarkers()
+    //self.removeAllMarkers()
+    self.destroyAllMarkers()
 
       var uluru = {lat: -25.344, lng: 131.036}
     
@@ -263,7 +161,8 @@ export default {
 self.setScreenBound(boundsMap)
 //self.loadJsonRestaurant()
 if(self.restaurantsJson.length === 0){
-self.setAPIRestaurants()
+//self.setAPIRestaurants()
+self.loadJsonRestaurant()
 }
 
         infoWindow = new google.maps.InfoWindow();
@@ -287,17 +186,13 @@ self.setAPIRestaurants()
           map.setCenter(self.mapsCenter);
         });
 
-      self.EventBoundChanged(map)
+      //self.EventBoundChanged(self.map)
+      self.addEventBoundChanged()
       console.log(self.markers)
       });
 
-self.google.maps.event.addListener(map, 'click', function(event) {
-  let ratingToCreate = new Rating(3, "Popopo", "Dadju")
-  let restaurantToCreate = new Restaurant("Couscous", "17 rue de la Paroisse, 77500", event.latLng.lat(), event.latLng.lng())
-  restaurantToCreate.addRatings(ratingToCreate)
-  self.addRestaurantJson(restaurantToCreate)
-   self.placeMarker(event.latLng, map, restaurantToCreate);
-})
+    self.eventClickMarker()
+    //self.addEventClickMarker()
     } catch (error) {
       //console.error(error);
     }

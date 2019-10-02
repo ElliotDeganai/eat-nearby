@@ -17,6 +17,7 @@ export const ADD_RESTAURANT = (state, restaurant) => {
     }
     export const ADD_RESTAURANTS = (state, restaurants) => {
         for(let restaurant of restaurants){
+            restaurant.id = state.restaurants.length
             state.restaurants.push(restaurant)
         }
     }
@@ -55,6 +56,9 @@ export const ADD_RESTAURANT = (state, restaurant) => {
     export const SET_GOOGLE = (state, google) => {
         state.google = google
     }
+    export const SET_MAP = (state, map) => {
+        state.map = map
+    }
     export const SET_MARKERS = (state, markers) => {
         for(let marker of markers){
             state.markers.push(marker)
@@ -67,6 +71,14 @@ export const ADD_RESTAURANT = (state, restaurant) => {
         state.markers[index].setMap(null)
         state.markers[index] = null
         state.markers.splice(index, 1)
+}
+
+export const DESTROY_ALL_MARKER = (state) => {
+    for (var i = 0; i < store.state.markers.length; i++ ) {
+    state.markers[i].setMap(null)
+    state.markers[i] = null
+    state.markers.splice(i, 1)
+    }
 }
     export const SET_MAPS_CENTER = (state, center) => {
         state.mapsCenter = center

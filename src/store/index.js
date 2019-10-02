@@ -1,11 +1,11 @@
-import Vue from 'vue'
+/*import Vue from 'vue'
 import Vuex from 'vuex'
 import restaurant from './modules/restaurant'
 import map from './modules/map'
 
 Vue.use(Vuex)
 
-const debug = process.env.NODE_ENV !== 'production'
+ const debug = process.env.NODE_ENV !== 'production'
 
 export default new Vuex.Store({
   modules: {
@@ -13,9 +13,9 @@ export default new Vuex.Store({
     restaurant
   },
   strict: debug
-})
+}) */
 
-/* import Vue from 'vue'
+import Vue from 'vue'
 import Vuex from 'vuex'
 import * as getters from './getters'
 import * as actions from './actions'
@@ -29,6 +29,7 @@ const state = {
     restaurantFocus: null,
     screenBound: null,
     google: null,
+    maps: null,
     mapsCenter: null,
     markers: [],
     starFrom: 1,
@@ -61,4 +62,4 @@ let store = new Vuex.Store({
 
 global.store = store
 
-export default store */
+export default store

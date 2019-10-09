@@ -54,7 +54,7 @@
       <button v-on:click="this.clearRestaurantFocus">Revenir à la liste</button>
     </div>
   <div>
-    <router-link :to="{name: 'restaurant'}" class="">Voir les détails du restaurant</router-link>
+    <router-link :to="{name: 'restaurant', params: {id: this.restaurantFocus.id}}" class="">Voir les détails du restaurant</router-link>
   </div>
     <h1> {{ this.restaurantFocus.name }} </h1>
     <p> {{ this.restaurantFocus.address }} </p>
@@ -70,21 +70,6 @@
           <h4 > {{ restaurantUnic.author }} </h4>
           <p> {{ restaurantUnic.comment }} </p>
           <p> {{ restaurantUnic.star }} </p>
-        </li>
-        <li class="newComment">
-          <div><input v-model="newPseudo" type="text" placeholder="Entrez votre pseudo..."/></div>
-          <div><input v-model="newComment" type="textarea" placeholder="Entrez votre commentaire..."/></div>
-          <div><select v-model="newRating" class="" id="">
-            <option>1</option>
-            <option>2</option>
-            <option>3</option>
-            <option>4</option>
-            <option>5</option>
-          </select>
-          </div>
-          <div>
-            <button v-on:click.prevent="addReview()">Ajouter un commentaire</button>
-          </div>
         </li>
       </ul>
     </div>
@@ -119,6 +104,7 @@ export default {
             'destroyRestaurant',
             'addRestaurantJson',
             'addRestaurants',
+            'setRestaurants',
             'addRestaurantsJson',
             'loadJsonRestaurant',
             'changeRestaurantFocus',
@@ -144,19 +130,9 @@ export default {
             }else{
                 return this.restaurants
             }
-        },
-         addReview(){
-          if(this.newPseudo !== '' && this.newComment !== '' && this.newRating !== ''){
-            let ratingToAdd = new Rating(this.newRating, this.newComment, this.newPseudo)
-            this.addComment(ratingToAdd)
-          }
-          this.newPseudo = ''
-          this.newComment = ''
-          this.newRating = ''
-        },       
+        }       
       },
       mounted(){
-          console.log(this.restaurantFocus)
       }, 
       computed: {
         ...Vuex.mapGetters([
@@ -184,6 +160,7 @@ export default {
           set(value) {
             let self = this
             this.setStarFrom(Number(value))
+            //this.setRestaurants()
         }
           }
         ,
@@ -193,11 +170,12 @@ export default {
           },
           set(value) {
             this.setStarTo(Number(value))
+            //this.setRestaurants()
           }
         }
       
-      }
-}
+      },
+    }
 </script>
 <style>
   .restaurants-list{

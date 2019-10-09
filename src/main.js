@@ -4,6 +4,9 @@ import * as VueGoogleMaps from 'vue2-google-maps'
 import VueResource from 'vue-resource'
 import Vuex from 'vuex'
 import VueRouter from 'vue-router'
+import VModal from 'vue-js-modal'
+
+Vue.use(VModal)
 
 Vue.use(Vuex)
 
@@ -30,7 +33,7 @@ const router = new VueRouter({
     name: 'root'
   },
   {
-    path: '/PageRestaurant',
+    path: '/PageRestaurant/:id',
     components: require('./components/Restaurant.vue'),
     name: 'restaurant'
   }]

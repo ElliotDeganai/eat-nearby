@@ -1,13 +1,13 @@
 <template>
   <div class="restaurant">
     <div class="carousel-restaurant">
-      <img v-bind:src="this.restaurantFocus[0].streetViewUrl"/>
+      <img v-bind:src="restaurant.streetViewUrl"/>
     </div>
-    <h1 class="title-restaurant"> {{ this.restaurantFocus[0].name }} </h1>
+    <h1 class="title-restaurant"> {{ restaurant.name }} </h1>
     <div class="info-card">
       <ul>
-        <li> Note moyenne: {{ this.restaurantFocus[0].averageRating }} </li>
-        <li> Adresse: {{ this.restaurantFocus[0].address }} </li>
+        <li> Note moyenne: {{ restaurant.averageRating }} </li>
+        <li> Adresse: {{ restaurant.address }} </li>
       </ul>
     </div>
     <p class="description-restaurant">
@@ -15,7 +15,7 @@
     </p>
     <div class="ratings">
       <ul>
-        <li class="item-list p-8"  v-bind:key="rating.name" v-for="rating in this.restaurantFocus[0].ratings">
+        <li class="item-list p-8"  v-bind:key="rating.name" v-for="rating in restaurant.ratings">
           <h4> {{ rating.author }} </h4>
           <p> {{ rating.comment }} </p>
           <p> {{ rating.star }} </p>
@@ -51,6 +51,7 @@ export default {
   store: store,
     data(){
         return{
+          restaurant: null,
           newPseudo: '',
           newComment: '',
           newRating: ''
@@ -59,21 +60,23 @@ export default {
     methods: {
       ...Vuex.mapActions([
           'addRestaurant',
-          'addComment',
+          //'addComment',
           'addRestaurants',
           'loadJsonRestaurant',
           'changeRestaurantFocus',
           'clearRestaurantFocus',
           'setStarFrom',
-          'setStarTo'
+          'setStarTo',
+          'replaceRestaurant'
       ]),
-        addRating(){
-          let restaurant
+        addComment(){
+          let restaurant = this.restaurant
           if(this.newPseudo !== '' && this.newComment !== '' && this.newRating !== ''){
             let ratingToAdd = new Rating(this.newRating, this.newComment, this.newPseudo)
             //this.addComment(this.restaurantFocus[0].lat, this.restaurantFocus[0].long, ratingToAdd)
-            restaurant = this.restaurant(this.restaurantFocus[0].lat, this.restaurantFocus[0].long)[0]
-            let indexRestaurant = this.restaurants.indexOf(restaurant);
+            restaurant.addRatings(ratingToAdd)
+            console.log(restaurant)
+            this.replaceRestaurant(restaurant)
           }
           this.newPseudo = ''
           this.newComment = ''
@@ -84,7 +87,7 @@ export default {
         ...Vuex.mapGetters([
             'restaurants',
             'restaurantsJson',
-            'restaurant',
+            //'restaurant',
             'restaurantJson',
             'restaurantsCount',
             'restaurantsJsonCount',
@@ -98,8 +101,14 @@ export default {
             'google',
             'markers',
             'mapsCenter',
+            'restaurantById'
         ]),
-    }
+
+    },
+        created(){
+          let self = this
+          this.restaurant = this.restaurantById(this.$route.params.id)
+        }
 }
 </script>
 

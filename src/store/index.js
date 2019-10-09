@@ -27,6 +27,7 @@ const state = {
     restaurants: [],
     restaurantsJson: [],
     restaurantFocus: null,
+    locations: [],
     screenBound: null,
     google: null,
     maps: null,
@@ -34,7 +35,8 @@ const state = {
     markers: [],
     starFrom: 1,
     starTo: 5,
-    counterRestaurants: 0
+    counterRestaurants: 0,
+    addingRestaurant: false
 }
 
 

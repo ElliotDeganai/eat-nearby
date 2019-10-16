@@ -205,11 +205,7 @@ export const destroyMarkersOutbound = (store) => {
     }
 }
 export const destroyAllMarkers = (store) => {
-    //let store.state = this
-    for (var i = 0; i < store.state.markers.length; i++) {
-        store.commit('DESTROY_MARKER', i)
-    }
-    store.state.markers = [];
+        store.commit('DESTROY_ALL_MARKER')
 }
 export const destroyMarker = (store, index) => {
     store.commit('DESTROY_MARKER', index)

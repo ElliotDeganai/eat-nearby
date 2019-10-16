@@ -1,16 +1,19 @@
 <template>
     <div class="flex eat-nearby">
-      <div class="back-window" v-if="this.addingRestaurant"></div>
-            <restaurant-list/>
-            
+      <div><button @click="this.destroyAllMarkers">Remove Markers</button> </div>
+      <div class="back-window" v-show="this.addingRestaurant"></div>
+            <restaurant-list :restaurantsList="this.restaurants" :selectedRestaurant="this.restaurantFocus"/>
             <br>
             <google-maps :locationsForMap="locationsForMap" @mapClicked="onMapClicked" @markerClicked="onMarkerClicked" @boundChanged="onBoundChanged"/>
-            <modal v-if="this.addingRestaurant" :coord="newRestaurantCoord" @formValidated="onFormValidated"/>
+            <modal v-show="this.addingRestaurant">
+              <restaurant-form :coord="newRestaurantCoord" @formValidated="onFormValidated"/>
+            </modal>
     </div>
 </template>
 
 <script>
 import RestaurantList from './RestaurantList.vue'
+import RestaurantForm from './RestaurantForm.vue'
 import GoogleMaps from './GoogleMaps.vue'
 import Modal from './Modal.vue'
 import Restaurant from "../entity/restaurant";
@@ -26,11 +29,12 @@ export default {
     return {
       newRestaurantCoord: '',
       newRestaurantToAdd: null,
-      locationsForMap: []
+      locationsForMap: [],
+
     }
   },
   components: {
-    RestaurantList, GoogleMaps, Modal
+    RestaurantList, GoogleMaps, Modal, RestaurantForm
   },
   methods: {
     ...Vuex.mapActions([
@@ -65,7 +69,7 @@ export default {
         'changeRestaurantFocusById',
         'setAddingRestaurant'
     ]),
-    onMapClicked(latLng, map){
+    onMapClicked(latLng){
       let self = this
 /*         let ratingToCreate = new Rating(3, "Popopo", "Dadju");
 
@@ -107,7 +111,11 @@ export default {
         self.addRestaurantJson(restaurantToCreate);
         self.addRestaurant(restaurantToCreate)
         self.setAddingRestaurant()
-    }
+    },
+    restoRemoved(){
+      let self = this
+      self.clearRestaurants()
+    },
   },
   computed: {
     ...Vuex.mapGetters([
@@ -137,26 +145,14 @@ export default {
         watch : {
         starTo:function(val) {
           this.setRestaurants()
-          this.locationsForMap = []
-          for(let location of this.locations){
-            
-            this.locationsForMap.push(location)
-          }
+          this.locationsForMap = this.locations
         },
         starFrom : function (val) {
           this.setRestaurants()
-          this.locationsForMap = []
-          for(let location of this.locations){
-            
-            this.locationsForMap.push(location)
-          }
+          this.locationsForMap = this.locations
         },
         locations:function(val){
-          this.locationsForMap = []
-          for(let location of this.locations){
-            
-            this.locationsForMap.push(location)
-          }
+          this.locationsForMap = this.locations
         }
 /*     restaurants: {
       get() {
@@ -177,7 +173,8 @@ export default {
   mounted(){
 /*     let self = this
     self.setRestaurantsAPI() */
-
+          this.setRestaurants()
+          this.locationsForMap = this.locations
 
   }
 }

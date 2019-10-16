@@ -1,9 +1,7 @@
 <template>
-  <div class="form-add-restaurant">
-
-          <div><input v-model="name" type="text" placeholder="Le nom du restaurant..."/></div>
-          <div><input v-model="adress" type="text" placeholder="L'adresse du restaurant..."/></div>
-          <button v-on:click="addNewRestaurant">Valider</button>
+  <div class="modal">
+      <h2>Ajouter un élément</h2>
+          <slot/>
       
   </div>
 </template>
@@ -16,34 +14,14 @@ import Vuex from 'vuex'
 
 export default {
     store: store,
-    props: ['coord'],
     data(){
         return {
-            name: '',
-            adress: '',
-            lat: this.coord.lat(),
-            lng: this.coord.lng()
         }
     },
     methods: {
         ...Vuex.mapActions([
             'setAddingRestaurant',
-        ]),
-        addNewRestaurant(){
-            let self = this
-            if(self.name === '' || self.address === ''){
-                return
-            }
-            let restaurantData = {
-                name: self.name,
-                address: self.address,
-                lat: self.lat,
-                lng: self.lng
-            }
-            //self.setAddingRestaurant()
-            self.$emit('formValidated', restaurantData)
-            
-        }
+        ])
     },
     mounted(){     
     }
@@ -52,7 +30,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
-    .form-add-restaurant{
+    .modal{
         position: absolute;
         z-index: 10;
         background-color: beige;

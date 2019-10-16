@@ -75,7 +75,6 @@ export default {
             let ratingToAdd = new Rating(this.newRating, this.newComment, this.newPseudo)
             //this.addComment(this.restaurantFocus[0].lat, this.restaurantFocus[0].long, ratingToAdd)
             restaurant.addRatings(ratingToAdd)
-            console.log(restaurant)
             this.replaceRestaurant(restaurant)
           }
           this.newPseudo = ''

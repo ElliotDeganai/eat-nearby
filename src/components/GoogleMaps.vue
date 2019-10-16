@@ -8,6 +8,7 @@ import store from "../store/index";
 import Restaurant from "../entity/restaurant";
 import Rating from "../entity/rating";
 import Location from "../entity/location";
+import MyMarker from "../entity/myMarker";
 import Vuex from "vuex";
 import axios from "axios";
 
@@ -83,18 +84,19 @@ export default {
         let location = new Location(self.restaurantsJsonCount, event.latLng.lat(), event.latLng.lng())
         if(self.addingRestaurant === false){
         self.addLocation(location)
-        self.placeMarker(latLng, map, location.id);
+        self.placeMarker(latLng, location.id);
         //console.log(self.addingRestaurant)
         
-          self.$emit('mapClicked', latLng, map) 
+          self.$emit('mapClicked', latLng) 
         }
          
       });
       
       
     },
-    placeMarker(location, map, id) {
+    placeMarker(location, id, addMarker = true) {
         let self = this
+        let map = this.map
     let marker = new self.google.maps.Marker({
         position: location, 
         map: map
@@ -106,7 +108,11 @@ export default {
              self.$emit('markerClicked', id)
         });
         //self.$store.commit('SET_MARKER', marker)
-        self.setMarker(marker)  
+        let myMarker = new MyMarker(id, marker)
+            if (addMarker === true) {
+                self.setMarker(myMarker)
+            } 
+        //self.setMarker(marker)  
       }, 
       
   eventBoundChanger(){
@@ -126,36 +132,35 @@ export default {
         for (let coord of self.coordForMap) {
             let markerExist = false
             let location = { lat: coord.position.lat, lng: coord.position.lng }
-            let marker = new self.google.maps.Marker({ position: location, map: map });
+            //let marker = new self.google.maps.Marker({ position: location, map: map });
 
+            if(self.markers.length !== 0){
             for (let mark of self.markers) {
-                if (marker.getPosition().lat() === mark.getPosition().lat() && marker.getPosition().lng() === mark.getPosition().lng()) {
+                if (mark.id === coord.id) {
                     markerExist = true
                 }
             }
+            }
+            let latLngCenter = new self.google.maps.LatLng(location.lat , location.lng)
+            if(markerExist === true){
+              self.placeMarker(latLngCenter, coord.id, false)
+            }else{
+              self.placeMarker(latLngCenter, coord.id)
+            }
             
-            self.google.maps.event.addListener(marker, 'click', function () {
-                let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
-                map.setCenter(latLngCenter)
-                //store.commit('SET_MAPS_CENTER', latLngCenter)
-                
-                self.setMapsCenter(latLngCenter)
-                console.log(coord.id)
-                self.$emit('markerClicked', coord.id) 
-            });
               
-            if (markerExist === false) {
-                //store.commit('SET_MARKER', marker)
-                let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
-                //self.setMapsCenter(latLngCenter)
+/*             if (markerExist === false) {
                 self.setMarker(marker)
-            } 
+            }  */
         }
         self.$emit('boundChanged')
     });
 },
   getLocationByCoords(coords, lat, lng){
      return coords.filter(location => ((location.position.lat === Number(lat.toFixed(6)) || location.position.lat === Number(lat.toFixed(7)) || (location.position.lat === Number(lat))) && ((location.position.lng === Number(lng.toFixed(6))) || (location.position.lng === Number(lng.toFixed(7))) || (location.position.lng === Number(lng)))))[0]
+  },
+  addClickMarkerEvent(){
+
   }
   },
   computed: {
@@ -183,38 +188,24 @@ export default {
     ])
   },
         watch : {
-        locations:function(val) {
+        restaurants:function(val) {
           let self = this
-          this.destroyAllMarkers();
+          self.coordForMap = []
+          self.coordForMap = self.locationsForMap
+          self.destroyAllMarkers();
           for(let coord of self.locations){
             let location = { lat: coord.position.lat, lng: coord.position.lng }
-            let marker = new self.google.maps.Marker({ position: location, map: this.map });
-                      self.google.maps.event.addListener(marker, 'click', function() {
-                        let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
-                                        this.map.setCenter(latLngCenter)
-                
-                self.setMapsCenter(latLngCenter)
-             self.$emit('markerClicked', coord.id)
-        });
-            this.setMarker(marker)
+            self.placeMarker(location, coord.id)
       }
         },
-        locationsForMap:function(val) {
+/*         locationsForMap:function(val) {
           this.destroyAllMarkers();
           this.coordForMap = []
-          for(let location of this.locationsForMap){
+          for(let coord of this.locationsForMap){
             this.coordForMap.push(location)
-            let marker = new self.google.maps.Marker({ position: location.position, map: this.map });
-                      self.google.maps.event.addListener(marker, 'click', function() {
-                        let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
-                                        this.map.setCenter(latLngCenter)
-                
-                self.setMapsCenter(latLngCenter)
-             self.$emit('markerClicked', coord.id)
-        });
-            this.setMarker(marker) 
+            self.placeMarker(location, id)
           }
-      }
+      } */
         }
 
         ,
@@ -235,17 +226,6 @@ export default {
         disableDoubleClickZoom: false
       });
       self.setMap(map);
-    if(self.markers.length !== 0){
-      for(let markObj of self.markers){
-        
-            let location = { lat: markObj.getPosition().lat(), lng: markObj.getPosition().lng() }
-            let coord = self.getLocationByCoords(coordForMap, location.lat, location.lng)
-            let marker = new self.google.maps.Marker({ position: location, map: map });
-            self.google.maps.event.addListener(marker, 'click', function() {
-             self.$emit('markerClicked', coord.id)
-        });
-      }
-    }
 
     
 
@@ -269,6 +249,8 @@ export default {
           //self.setAPIRestaurants()
           self.loadJsonRestaurant();
         }
+
+
 
         infoWindow = new google.maps.InfoWindow();
 
@@ -296,6 +278,16 @@ export default {
           map.setCenter(self.mapsCenter);
         });
 
+    if(self.markers.length !== 0){
+      for(let markObj of self.markers){
+        
+            let location = { lat: markObj.marker.getPosition().lat(), lng: markObj.marker.getPosition().lng() }
+            let coord = self.getLocationByCoords(self.coordForMap, location.lat, location.lng)
+            self.placeMarker(location, coord.id, false)
+      }
+    } 
+
+
         //self.EventBoundChanged(self.map)
         //self.addEventBoundChanged();
         self.eventBoundChanger()
@@ -304,8 +296,9 @@ export default {
       //self.eventClickMarker();
       self.eventClickMarker()
       //self.addEventClickMarker()
+
     } catch (error) {
-      //console.error(error);
+      console.error(error);
     }
   }
 };

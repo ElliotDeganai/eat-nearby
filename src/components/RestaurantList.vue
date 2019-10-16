@@ -35,7 +35,7 @@
     <div>
         <ul>
             <div>
-              <li class="item-list flex p-8"  v-bind:key="restaurant.name" v-for="restaurant in this.filteredRestaurants(this.starFrom, this.starTo)">
+              <li class="item-list flex p-8"  v-bind:key="restaurant.name" v-for="restaurant in this.list">
                 <div>
                   <h3>{{ restaurant.name }}</h3>
                   <p>{{ restaurant.address}}</p>
@@ -88,11 +88,14 @@ import Rating from '../entity/rating';
 
 export default {
     store: store,
+    props: ['restaurantsList', 'selectedRestaurant'],
     data(){
         return{
           newPseudo: '',
           newComment: '',
-          newRating: ''
+          newRating: '',
+          list: [],
+          restaurantFocus: null
         }
     },
       //mounted () {
@@ -123,20 +126,14 @@ export default {
             'destroyAllMarkers',
             'destroyMarkersOutbound',
             'destroyMarker'
-        ]),
-        filteredRestaurants(starFrom, starTo){
-            if(starFrom <= starTo && this.restaurantsCount !== 0){
-                return this.restaurantsByRating(Number(starFrom), Number(starTo))
-            }else{
-                return this.restaurants
-            }
-        }       
+        ]),      
       },
       mounted(){
+
       }, 
       computed: {
         ...Vuex.mapGetters([
-            'restaurants',
+            //'restaurants',
             'restaurantsJson',
             'restaurant',
             'restaurantJson',
@@ -144,7 +141,7 @@ export default {
             'restaurantsJsonCount',
             'restaurantsByRating',
             'restaurantsJsonByRating',
-            'restaurantFocus',
+            //'restaurantFocus',
             'starFrom',
             'starTo',
             'counterRestaurants',
@@ -172,9 +169,16 @@ export default {
             this.setStarTo(Number(value))
             //this.setRestaurants()
           }
-        }
-      
+        }     
       },
+      watch: {
+        restaurantsList: function (value) {
+          this.list = this.restaurantsList
+        },
+        selectedRestaurant: function (value) {
+          this.restaurantFocus = this.selectedRestaurant
+        }
+      }
     }
 </script>
 <style>

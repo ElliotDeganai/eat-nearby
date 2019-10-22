@@ -1,5 +1,5 @@
 <template>
-  <div class="restaurant">
+  <div class="restaurant" v-if="!this.modeMaps">
     <div class="carousel-restaurant">
       <img v-bind:src="restaurant.streetViewUrl"/>
     </div>
@@ -37,18 +37,20 @@
         </li>
       </ul>
     </div>
-    <div><router-link :to="{name: 'root'}" class="">Retour à la liste</router-link></div>
+<!--     <div><router-link :to="{name: 'root'}" class="">Retour à la liste</router-link></div> -->
+    <div><button @click="this.setModeMaps">Retour à la liste</button></div>
   </div>
 </template>
 
 <script>
-import Restaurant from '../entity/restaurant.js';
-import Rating from '../entity/rating';
-import store from '../store/index'
+import Restaurant from '../../entity/restaurant.js';
+import Rating from '../../entity/rating';
+import store from '../../store/index'
 import Vuex from 'vuex'
 
 export default {
   store: store,
+  props: ['restaurantForVue'],
     data(){
         return{
           restaurant: null,
@@ -59,15 +61,8 @@ export default {
     },
     methods: {
       ...Vuex.mapActions([
-          'addRestaurant',
-          //'addComment',
-          'addRestaurants',
-          'loadJsonRestaurant',
-          'changeRestaurantFocus',
-          'clearRestaurantFocus',
-          'setStarFrom',
-          'setStarTo',
-          'replaceRestaurant'
+          'replaceRestaurant',
+          'setModeMaps'
       ]),
         addComment(){
           let restaurant = this.restaurant
@@ -84,29 +79,17 @@ export default {
     },
     computed: {
         ...Vuex.mapGetters([
-            'restaurants',
-            'restaurantsJson',
-            //'restaurant',
-            'restaurantJson',
-            'restaurantsCount',
-            'restaurantsJsonCount',
-            'restaurantsByRating',
-            'restaurantsJsonByRating',
-            'restaurantFocus',
-            'starFrom',
-            'starTo',
-            'counterRestaurants',
-            'screenBound',
-            'google',
-            'markers',
-            'mapsCenter',
-            'restaurantById'
+            'modeMaps'
         ]),
-
     },
-        created(){
+    watch: {
+    restaurantForVue: function () {
+      this.restaurant = this.restaurantForVue
+    }
+    },
+        mounted(){
           let self = this
-          this.restaurant = this.restaurantById(this.$route.params.id)
+          self.restaurant = self.restaurantForVue
         }
 }
 </script>

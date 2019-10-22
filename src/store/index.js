@@ -36,7 +36,8 @@ const state = {
     starFrom: 1,
     starTo: 5,
     counterRestaurants: 0,
-    addingRestaurant: false
+    addingRestaurant: false,
+    modeMaps: true
 }
 
 

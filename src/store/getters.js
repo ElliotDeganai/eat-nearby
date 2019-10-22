@@ -22,3 +22,4 @@
     export const restaurantsByRating = (state) => (toStar, fromStar) => state.restaurants.filter(restaurant => restaurant !== undefined && restaurant.averageRating >= toStar && restaurant.averageRating <= fromStar)
     export const restaurantsJsonByRating = (state) => (toStar, fromStar) => state.restaurantsJson.filter(restaurant => restaurant.averageRating >= toStar && restaurant.averageRating <= fromStar)
     export const addingRestaurant = state => state.addingRestaurant
+    export const modeMaps = state => state.modeMaps

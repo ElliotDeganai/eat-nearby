@@ -1,160 +1,133 @@
 <template>
-    <div class="flex eat-nearby">
-      <div><button @click="this.destroyAllMarkers">Remove Markers</button> </div>
+  <div class="eat-nearby">
+    <div class="mode-maps flex" v-show="this.modeMaps">
       <div class="back-window" v-show="this.addingRestaurant"></div>
-            <restaurant-list :restaurantsList="this.restaurants" :selectedRestaurant="this.restaurantFocus"/>
-            <br>
-            <google-maps :locationsForMap="locationsForMap" @mapClicked="onMapClicked" @markerClicked="onMarkerClicked" @boundChanged="onBoundChanged"/>
-            <modal v-show="this.addingRestaurant">
-              <restaurant-form :coord="newRestaurantCoord" @formValidated="onFormValidated"/>
-            </modal>
+      <restaurant-list
+        :restaurantsList="this.restaurants"
+        :selectedRestaurant="this.restaurantFocus"
+        @focusActionned="onFocusActionned"
+      />
+      <br />
+      <google-maps
+        :locationsForMap="locationsForMap"
+        @mapClicked="onMapClicked"
+        @markerClicked="onMarkerClicked"
+        @boundChanged="onBoundChanged"
+      />
+      <modal v-show="this.addingRestaurant">
+        <restaurant-form :coord="newRestaurantCoord" @formValidated="onFormValidated" />
+      </modal>
     </div>
+     <div class="mode-restaurant" v-show="!this.modeMaps">
+      <restaurant-vue :restaurantForVue="this.restaurantFocus"/>
+    </div>
+  </div>
 </template>
 
 <script>
-import RestaurantList from './RestaurantList.vue'
-import RestaurantForm from './RestaurantForm.vue'
-import GoogleMaps from './GoogleMaps.vue'
-import Modal from './Modal.vue'
+import RestaurantList from "./restaurant/RestaurantList.vue";
+import RestaurantForm from "./restaurant/RestaurantForm.vue";
+import RestaurantVue from "./restaurant/RestaurantVue.vue";
+import GoogleMaps from "./GoogleMaps.vue";
+import Modal from "./Modal.vue";
 import Restaurant from "../entity/restaurant";
 import Rating from "../entity/rating";
 import Location from "../entity/location";
-import store from '../store/index'
-import Vuex from 'vuex'
+import store from "../store/index";
+import Vuex from "vuex";
 //import VModal from 'vue-js-modal';
 
 export default {
   store: store,
   data() {
     return {
-      newRestaurantCoord: '',
+      newRestaurantCoord: "",
       newRestaurantToAdd: null,
-      locationsForMap: [],
-
-    }
+      locationsForMap: []
+    };
   },
   components: {
-    RestaurantList, GoogleMaps, Modal, RestaurantForm
+    RestaurantList,
+    GoogleMaps,
+    Modal,
+    RestaurantForm,
+    RestaurantVue
   },
   methods: {
     ...Vuex.mapActions([
-        'addRestaurant',
-        'destroyRestaurant',
-        'addRestaurantJson',
-        'addRestaurants',
-        'setRestaurants',
-        'setRestaurantsAPI',
-        'addRestaurantsJson',
-        'loadJsonRestaurant',
-        'changeRestaurantFocus',
-        'clearRestaurantFocus',
-        'clearRestaurants',
-        'clearRestaurantsJson',
-        'setStarFrom',
-        'setStarTo',
-        'incrementCounterRestaurants',
-        'setScreenBound',
-        'clearMarkers',
-        'setMarkers',
-        'setMarker',
-        'setGoogle',
-        'setMap',
-        'setMapsCenter',
-        'destroyAllMarkers',
-        'destroyMarkersOutbound',
-        'destroyMarker',
-        'placeMarker',
-        'addEventBoundChanged',
-        'addEventClickMarker',
-        'changeRestaurantFocusById',
-        'setAddingRestaurant'
+      "addRestaurant",
+      "addLocation",
+      "addRestaurantJson",
+      "setRestaurants",
+      "loadJsonRestaurant",
+      "changeRestaurantFocus",
+      "changeRestaurantFocusById",
+      "setAddingRestaurant",
+      "setModeMaps",
+      "destroyAllMarkers"
     ]),
-    onMapClicked(latLng){
-      let self = this
-/*         let ratingToCreate = new Rating(3, "Popopo", "Dadju");
-
-        let restaurantToCreate = new Restaurant(
-          "Couscous",
-          "17 rue de la Paroisse, 77500",
-          Number(latLng.lat()),
-          Number(latLng.lng())
-        );
-        restaurantToCreate.addRatings(ratingToCreate);
-        self.addRestaurantJson(restaurantToCreate);
-        self.addRestaurant(restaurantToCreate) */
-        self.newRestaurantCoord = latLng
-        self.setAddingRestaurant()
+    onMapClicked(latLng) {
+      let self = this;
+      self.newRestaurantCoord = latLng;
+      self.setAddingRestaurant();
     },
-    onMarkerClicked(id){
-      let self = this
-      self.changeRestaurantFocusById(id)
-
-      
-
-      //this.$store.commit('CHANGE_RESTAURANT_FOCUS', id);
+    onMarkerClicked(id) {
+      let self = this;
+      self.changeRestaurantFocusById(id);
     },
-    onBoundChanged(){
-      let self = this
-      self.setRestaurants()
+    onBoundChanged() {
+      let self = this;
+      self.setRestaurants();
     },
-    onFormValidated(restaurantData){
-      let self = this
-         let ratingToCreate = new Rating(3, "Popopo", "Dadju");
+    onFormValidated(restaurantData) {
+      let self = this;
+      let location = new Location(self.restaurantsJsonCount, restaurantData.lat, restaurantData.lng)
+      let ratingToCreate = new Rating(3, "Popopo", "Dadju");
 
-        let restaurantToCreate = new Restaurant(
-          restaurantData.name,
-          restaurantData.address,
-          Number(restaurantData.lat),
-          Number(restaurantData.lng)
-        );
-        restaurantToCreate.addRatings(ratingToCreate);
-        self.addRestaurantJson(restaurantToCreate);
-        self.addRestaurant(restaurantToCreate)
-        self.setAddingRestaurant()
+      let restaurantToCreate = new Restaurant(
+        restaurantData.name,
+        restaurantData.address,
+        Number(restaurantData.lat),
+        Number(restaurantData.lng)
+      );
+      restaurantToCreate.addRatings(ratingToCreate);
+      self.addRestaurantJson(restaurantToCreate);
+      self.addLocation(location)
+      //self.addRestaurant(restaurantToCreate);
+      self.setAddingRestaurant();
     },
-    restoRemoved(){
-      let self = this
-      self.clearRestaurants()
+    onFocusActionned() {
+      self.setModeMaps()
     },
   },
   computed: {
     ...Vuex.mapGetters([
-        'restaurantsJson',
-        'restaurants',
-        "locations",
-        'restaurant',
-        'restaurantJson',
-        'restaurantsCount',
-        'restaurantsJsonCount',
-        'restaurantsByRating',
-        'restaurantsJsonByRating',
-        'restaurantFocus',
-        'starFrom',
-        'starTo',
-        'counterRestaurants',
-        'screenBound',
-        'google',
-        'map',
-        'markers',
-        'mapsCenter',
-        'locations',
-        'restaurantById',
-        'addingRestaurant'
-    ]),
+      "restaurantsJson",
+      "restaurants",
+      "locations",
+      "restaurantJson",
+      "restaurantFocus",
+      "starFrom",
+      "starTo",
+      "locations",
+      "restaurantById",
+      "addingRestaurant",
+      "modeMaps"
+    ])
+  },
+  watch: {
+    starTo: function(val) {
+      this.setRestaurants();
+      this.locationsForMap = this.locations;
     },
-        watch : {
-        starTo:function(val) {
-          this.setRestaurants()
-          this.locationsForMap = this.locations
-        },
-        starFrom : function (val) {
-          this.setRestaurants()
-          this.locationsForMap = this.locations
-        },
-        locations:function(val){
-          this.locationsForMap = this.locations
-        }
-/*     restaurants: {
+    starFrom: function(val) {
+      this.setRestaurants();
+      this.locationsForMap = this.locations;
+    },
+    locations: function(val) {
+      this.locationsForMap = this.locations;
+    }
+    /*     restaurants: {
       get() {
         return this.$store.state.restaurants
       },
@@ -169,27 +142,26 @@ export default {
       set() {
       }
     }*/
-  }, 
-  mounted(){
-/*     let self = this
+  },
+  mounted() {
+    /*     let self = this
     self.setRestaurantsAPI() */
-          this.setRestaurants()
-          this.locationsForMap = this.locations
-
+    this.loadJsonRestaurant()
+    this.setRestaurants();
+    this.locationsForMap = this.locations;
   }
-}
+};
 </script>
 
 <style>
 #app {
-  font-family: 'Avenir', Helvetica, Arial, sans-serif;
+  font-family: "Avenir", Helvetica, Arial, sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-align: center;
   color: #2c3e50;
-  margin-top: 60px;
 }
-.back-window{
+.back-window {
   position: absolute;
   z-index: 5;
   background-color: black;

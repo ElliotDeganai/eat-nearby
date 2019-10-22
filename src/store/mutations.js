@@ -103,3 +103,6 @@ export const DESTROY_ALL_MARKER = (state) => {
     export const SET_ADDING_RESTAURANT = (state) => {
         state.addingRestaurant = !state.addingRestaurant
     }
+    export const SET_MODE_MAPS = (state) => {
+        state.modeMaps = !state.modeMaps
+    }

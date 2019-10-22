@@ -1,5 +1,5 @@
 <template>
-  <div class="gmaps" @click="eventClickMarker" @bounds_changed="eventBoundChanger"></div>
+  <div class="gmaps"></div>
 </template>
 
 <script>
@@ -21,42 +21,12 @@ export default {
   props: ['locationsForMap'],
   data() {
     return {
-      testLocations: [
-        {
-          position: {
-            lat: 48.8865035,
-            lng: 2.3442197
-          }
-        },
-        {
-          position: {
-            lat: 48.8737815,
-            lng: 2.3501649
-          }
-        }
-        // ...
-      ],
       coordForMap: []
     }
   },
   methods: {
     ...Vuex.mapActions([
-      "addRestaurant",
-      "destroyRestaurant",
-      "addRestaurantJson",
-      "addRestaurants",
-      "setRestaurants",
       "setLocations",
-      "setRestaurantsAPI",
-      "addRestaurantsJson",
-      "loadJsonRestaurant",
-      "changeRestaurantFocus",
-      "clearRestaurantFocus",
-      "clearRestaurants",
-      "clearRestaurantsJson",
-      "setStarFrom",
-      "setStarTo",
-      "incrementCounterRestaurants",
       "setScreenBound",
       "clearMarkers",
       "setMarkers",
@@ -65,11 +35,6 @@ export default {
       "setMap",
       "setMapsCenter",
       "destroyAllMarkers",
-      "destroyMarkersOutbound",
-      "destroyMarker",
-      "placeMarker",
-      "addEventBoundChanged",
-      "addEventClickMarker",
       "addLocation"
     ]),
     eventClickMarker() {
@@ -81,18 +46,11 @@ export default {
           event.latLng.lat(),
           event.latLng.lng()
         );
-        let location = new Location(self.restaurantsJsonCount, event.latLng.lat(), event.latLng.lng())
         if(self.addingRestaurant === false){
-        self.addLocation(location)
-        self.placeMarker(latLng, location.id);
-        //console.log(self.addingRestaurant)
-        
-          self.$emit('mapClicked', latLng) 
+          self.$emit('mapClicked', latLng)
         }
          
       });
-      
-      
     },
     placeMarker(location, id, addMarker = true) {
         let self = this
@@ -121,14 +79,8 @@ export default {
     map.addListener('bounds_changed', function () {
         let tempBoundsMap = map.getBounds()
         self.setScreenBound(tempBoundsMap)
-        //store.commit('SET_SCREEN_BOUND', tempBoundsMap)
         self.destroyAllMarkers()
-        //self.destroyMarkersOutbound()
-        //store.commit('DESTROY_ALL_MARKER', tempBoundsMap)
-        //self.setRestaurants()
         self.setLocations()
-        
-
         for (let coord of self.coordForMap) {
             let markerExist = false
             let location = { lat: coord.position.lat, lng: coord.position.lng }
@@ -138,6 +90,8 @@ export default {
             for (let mark of self.markers) {
                 if (mark.id === coord.id) {
                     markerExist = true
+                    console.log(mark.id)
+                    console.log(coord.id)
                 }
             }
             }
@@ -147,20 +101,12 @@ export default {
             }else{
               self.placeMarker(latLngCenter, coord.id)
             }
-            
-              
-/*             if (markerExist === false) {
-                self.setMarker(marker)
-            }  */
         }
         self.$emit('boundChanged')
     });
 },
   getLocationByCoords(coords, lat, lng){
      return coords.filter(location => ((location.position.lat === Number(lat.toFixed(6)) || location.position.lat === Number(lat.toFixed(7)) || (location.position.lat === Number(lat))) && ((location.position.lng === Number(lng.toFixed(6))) || (location.position.lng === Number(lng.toFixed(7))) || (location.position.lng === Number(lng)))))[0]
-  },
-  addClickMarkerEvent(){
-
   }
   },
   computed: {
@@ -188,7 +134,7 @@ export default {
     ])
   },
         watch : {
-        restaurants:function(val) {
+        locations:function(val) {
           let self = this
           self.coordForMap = []
           self.coordForMap = self.locationsForMap
@@ -197,26 +143,12 @@ export default {
             let location = { lat: coord.position.lat, lng: coord.position.lng }
             self.placeMarker(location, coord.id)
       }
-        },
-/*         locationsForMap:function(val) {
-          this.destroyAllMarkers();
-          this.coordForMap = []
-          for(let coord of this.locationsForMap){
-            this.coordForMap.push(location)
-            self.placeMarker(location, id)
-          }
-      } */
+        }
         }
 
         ,
   async mounted() {
     let self = this;
-    //self.removeAllMarkers()
-    //self.destroyAllMarkers();
-    //self.destroyMarkersOutbound()
-
-
-
     try {
       const google = await gmapsInit();
 
@@ -226,12 +158,6 @@ export default {
         disableDoubleClickZoom: false
       });
       self.setMap(map);
-
-    
-
-      //self.removeAllMarkers()
-      //self.destroyAllMarkers();
-      //self.destroyMarkersOutbound()
 
       var uluru = { lat: -25.344, lng: 131.036 };
 
@@ -244,13 +170,6 @@ export default {
         map.fitBounds(results[0].geometry.viewport);
         let boundsMap = map.getBounds();
         self.setScreenBound(boundsMap);
-        //self.loadJsonRestaurant()
-        if (self.restaurantsJson.length === 0) {
-          //self.setAPIRestaurants()
-          self.loadJsonRestaurant();
-        }
-
-
 
         infoWindow = new google.maps.InfoWindow();
 
@@ -273,23 +192,8 @@ export default {
             map: map,
             icon: image
           });
-          //infoWindow.setPosition(pos);
-          //infoWindow.setContent("Here you are!");
           map.setCenter(self.mapsCenter);
         });
-
-    if(self.markers.length !== 0){
-      for(let markObj of self.markers){
-        
-            let location = { lat: markObj.marker.getPosition().lat(), lng: markObj.marker.getPosition().lng() }
-            let coord = self.getLocationByCoords(self.coordForMap, location.lat, location.lng)
-            self.placeMarker(location, coord.id, false)
-      }
-    } 
-
-
-        //self.EventBoundChanged(self.map)
-        //self.addEventBoundChanged();
         self.eventBoundChanger()
       });
 

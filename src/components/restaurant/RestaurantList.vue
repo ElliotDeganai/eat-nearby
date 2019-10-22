@@ -54,7 +54,8 @@
       <button v-on:click="this.clearRestaurantFocus">Revenir à la liste</button>
     </div>
   <div>
-    <router-link :to="{name: 'restaurant', params: {id: this.restaurantFocus.id}}" class="">Voir les détails du restaurant</router-link>
+    <!-- <router-link :to="{name: 'restaurant', params: {id: this.restaurantFocus.id}}" class="">Voir les détails du restaurant</router-link> -->
+    <button @click="this.setModeMaps">Voir les détails du restaurant</button>
   </div>
     <h1> {{ this.restaurantFocus.name }} </h1>
     <p> {{ this.restaurantFocus.address }} </p>
@@ -80,11 +81,11 @@
 <script>
 //import store from './RestaurantsStore'
 import { createNamespacedHelpers } from 'vuex'
-import store from '../store/index'
+import store from '../../store/index'
 import Vuex from 'vuex'
 import { setTimeout } from 'timers';
-import Restaurant from '../entity/restaurant.js';
-import Rating from '../entity/rating';
+import Restaurant from '../../entity/restaurant.js';
+import Rating from '../../entity/rating';
 
 export default {
     store: store,
@@ -98,57 +99,21 @@ export default {
           restaurantFocus: null
         }
     },
-      //mounted () {
-        //this.loadJsonRestaurant()
-      //},
       methods: {
         ...Vuex.mapActions([
-            'addRestaurant',
-            'destroyRestaurant',
-            'addRestaurantJson',
-            'addRestaurants',
-            'setRestaurants',
-            'addRestaurantsJson',
-            'loadJsonRestaurant',
-            'changeRestaurantFocus',
             'clearRestaurantFocus',
-            'clearRestaurants',
-            'clearRestaurantsJson',
             'setStarFrom',
             'setStarTo',
-            'incrementCounterRestaurants',
-            'setScreenBound',
-            'clearMarkers',
-            'setMarkers',
-            'setMarker',
-            'setGoogle',
-            'setMapsCenter',
-            'destroyAllMarkers',
-            'destroyMarkersOutbound',
-            'destroyMarker'
-        ]),      
+            'setModeMaps'
+        ])     
       },
       mounted(){
 
       }, 
       computed: {
         ...Vuex.mapGetters([
-            //'restaurants',
-            'restaurantsJson',
-            'restaurant',
-            'restaurantJson',
-            'restaurantsCount',
-            'restaurantsJsonCount',
-            'restaurantsByRating',
-            'restaurantsJsonByRating',
-            //'restaurantFocus',
             'starFrom',
-            'starTo',
-            'counterRestaurants',
-            'screenBound',
-            'google',
-            'markers',
-            'mapsCenter',
+            'starTo'
         ]),
         starFrom: {
           get() {

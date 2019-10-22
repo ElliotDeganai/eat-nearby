@@ -4,14 +4,15 @@
           <div><input v-model="name" type="text" placeholder="Le nom du restaurant..."/></div>
           <div><input v-model="address" type="text" placeholder="L'adresse du restaurant..."/></div>
           <button v-on:click="addNewRestaurant">Valider</button>
+          <button v-on:click="setAddingRestaurant">Annuler</button>
       
   </div>
 </template>
 
 <script>
-import Restaurant from "../entity/restaurant";
-import Rating from "../entity/rating";
-import store from '../store/index'
+import Restaurant from "../../entity/restaurant";
+import Rating from "../../entity/rating";
+import store from '../../store/index'
 import Vuex from 'vuex'
 
 export default {

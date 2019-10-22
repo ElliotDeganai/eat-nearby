@@ -23,6 +23,7 @@ class Restaurant{
         this.averageRating = 0
         this.averageRating = sumRatingsStars / this.ratings.length
         this.averageRating = Number(this.averageRating.toFixed(1))
+        
     }
 }
 export default Restaurant;

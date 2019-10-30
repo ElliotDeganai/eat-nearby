@@ -5,8 +5,9 @@
 const state = {
     screenBound: null,
     google: null,
+    maps: null,
     mapsCenter: null,
-    markers: [],
+    markers: []
 }
 
 // getters
@@ -14,7 +15,6 @@ const getters = {
     screenBound : state => state.screenBound,
     google : state => state.google,
     markers : state => state.markers,
-    counterRestaurants : state => state.counterRestaurants,
     mapsCenter : state => state.mapsCenter
 }
 

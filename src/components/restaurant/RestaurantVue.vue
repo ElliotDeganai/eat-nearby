@@ -1,19 +1,33 @@
 <template>
-  <div class="restaurant" v-if="!this.modeMaps">
-    <div class="carousel-restaurant">
-      <img v-bind:src="restaurant.streetViewUrl"/>
+  <div class="restaurant flex relative" v-if="!this.modeMaps">
+    <div class="restaurant-details w-1/2 mb-4">
+      <div class="carousel-restaurant flex flex-wrap">
+        <!-- <img v-bind:src="restaurant.streetViewUrl"/> -->
+        <div class="w-full"><img class="w-full" src="https://picsum.photos/400/200"/></div>
+        <div class="row flex">
+        <div class="item2 w-1/2">
+        <div class=""><img class="w-full" src="https://picsum.photos/200"/></div>
+        </div>
+        <div class="item3 flex w-1/2">
+        <div class="w-1/2"><img class="w-full" src="https://picsum.photos/100"/></div>
+        <div class="w-1/2"><img class="w-full" src="https://picsum.photos/100"/></div>
+        <div class="w-1/2"><img class="w-full" src="https://picsum.photos/100"/></div>
+        <div class="w-1/2"><img class="w-full" src="https://picsum.photos/100"/></div>
+        </div>
+        </div>
+      </div>
+      <h1 class="title-restaurant"> {{ restaurant.name }} </h1>
+      <div class="info-card">
+        <ul>
+          <li> Note moyenne: {{ restaurant.averageRating }} </li>
+          <li> Adresse: {{ restaurant.address }} </li>
+        </ul>
+      </div>
+      <p class="description-restaurant">
+  "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
+      </p>
     </div>
-    <h1 class="title-restaurant"> {{ restaurant.name }} </h1>
-    <div class="info-card">
-      <ul>
-        <li> Note moyenne: {{ restaurant.averageRating }} </li>
-        <li> Adresse: {{ restaurant.address }} </li>
-      </ul>
-    </div>
-    <p class="description-restaurant">
-"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."
-    </p>
-    <div class="ratings">
+    <div class="ratings w-1/2">
       <ul>
         <li class="item-list p-8"  v-bind:key="rating.name" v-for="rating in restaurant.ratings">
           <h4> {{ rating.author }} </h4>
@@ -38,7 +52,12 @@
       </ul>
     </div>
 <!--     <div><router-link :to="{name: 'root'}" class="">Retour à la liste</router-link></div> -->
-    <div><button @click="this.setModeMaps">Retour à la liste</button></div>
+    <div class="absolute">
+      <button class="arrow-back" @click="this.setModeMaps">
+        <svg class="text-white block h-12 w-12" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="24" height="24" fill="currentColor"><path class="heroicon-ui text-white" d="M5.41 11H21a1 1 0 0 1 0 2H5.41l5.3 5.3a1 1 0 0 1-1.42 1.4l-7-7a1 1 0 0 1 0-1.4l7-7a1 1 0 0 1 1.42 1.4L5.4 11z"/></svg>
+      
+      </button>
+    </div>
   </div>
 </template>
 

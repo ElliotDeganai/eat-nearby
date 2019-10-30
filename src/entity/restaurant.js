@@ -1,10 +1,12 @@
 class Restaurant{
-    constructor(name, address, lat, long){
+    constructor(name, address, lat, long, city, zip_code){
         this.id = 0;
         this.name = name;
         this.address = address;
         this.lat = lat;
         this.long = long;
+        this.city = city;
+        this.zip_code = zip_code;
         this.streetViewUrl = "https://maps.googleapis.com/maps/api/streetview?key=AIzaSyAKy_eNWWf9MXRvRezeuA_WlHFTVproHl8&location=" + lat + "," + long + "&size=150x100"
         this.ratings = [];
         this.averageRating = 0;

@@ -18,8 +18,8 @@
         <restaurant-form :coord="newRestaurantCoord" @formValidated="onFormValidated" />
       </modal>
     </div>
-     <div class="mode-restaurant" v-show="!this.modeMaps">
-      <restaurant-vue :restaurantForVue="this.restaurantFocus"/>
+    <div class="mode-restaurant" v-show="!this.modeMaps">
+      <restaurant-vue :restaurantForVue="this.restaurantFocus" />
     </div>
   </div>
 </template>
@@ -59,6 +59,7 @@ export default {
       "addLocation",
       "addRestaurantJson",
       "setRestaurants",
+      "setLocations",
       "loadJsonRestaurant",
       "changeRestaurantFocus",
       "changeRestaurantFocusById",
@@ -78,27 +79,34 @@ export default {
     onBoundChanged() {
       let self = this;
       self.setRestaurants();
+      self.setLocations();
     },
     onFormValidated(restaurantData) {
       let self = this;
-      let location = new Location(self.restaurantsJsonCount, restaurantData.lat, restaurantData.lng)
+      let location = new Location(
+        self.restaurantsJsonCount,
+        restaurantData.lat,
+        restaurantData.lng
+      );
       let ratingToCreate = new Rating(3, "Popopo", "Dadju");
 
       let restaurantToCreate = new Restaurant(
         restaurantData.name,
         restaurantData.address,
         Number(restaurantData.lat),
-        Number(restaurantData.lng)
+        Number(restaurantData.lng),
+        restaurantData.city,
+        restaurantData.zip_code
       );
       restaurantToCreate.addRatings(ratingToCreate);
       self.addRestaurantJson(restaurantToCreate);
-      self.addLocation(location)
+      self.addLocation(location);
       //self.addRestaurant(restaurantToCreate);
       self.setAddingRestaurant();
     },
     onFocusActionned() {
-      self.setModeMaps()
-    },
+      self.setModeMaps();
+    }
   },
   computed: {
     ...Vuex.mapGetters([
@@ -146,7 +154,7 @@ export default {
   mounted() {
     /*     let self = this
     self.setRestaurantsAPI() */
-    this.loadJsonRestaurant()
+    this.loadJsonRestaurant();
     this.setRestaurants();
     this.locationsForMap = this.locations;
   }

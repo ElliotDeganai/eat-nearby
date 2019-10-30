@@ -9,5 +9,25 @@
 }
 
 .item-list:hover{
-    @apply bg-gray-400;
+    @apply bg-gray-200;
+}
+
+.filter-restaurant-list{
+    @apply inset-y-0 shadow-lg block appearance-none w-full bg-white border border-gray-500 rounded-full pl-4
+}
+
+.filter-box-restaurant-list{
+    @apply mx-4 inline-block relative w-16
+}
+
+.filter-arrow-restaurant-list{
+    @apply fill-current h-6 w-4  border-l border-gray-600
+}
+
+.filter-arrow-box-restaurant-list{
+    @apply pointer-events-none absolute top-0 right-0 flex items-center px-2 text-gray-700
+}
+
+.restaurant-detail-button{
+    @apply shadow-lg block w-12 h-12 bg-white border border-gray-500 rounded-full
 }

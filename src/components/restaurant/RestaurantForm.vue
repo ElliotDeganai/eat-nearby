@@ -3,6 +3,8 @@
 
           <div><input v-model="name" type="text" placeholder="Le nom du restaurant..."/></div>
           <div><input v-model="address" type="text" placeholder="L'adresse du restaurant..."/></div>
+          <div><input v-model="city" type="text" placeholder="La ville du restaurant..."/></div>
+          <div><input v-model="zip_code" type="text" placeholder="Le code postal du restaurant..."/></div>
           <button v-on:click="addNewRestaurant">Valider</button>
           <button v-on:click="setAddingRestaurant">Annuler</button>
       
@@ -21,7 +23,9 @@ export default {
     data(){
         return {
             name: '',
-            address: ''
+            address: '',
+            city: '',
+            zip_code: ''
         }
     },
     methods: {
@@ -30,17 +34,21 @@ export default {
         ]),
         addNewRestaurant(){
             let self = this
-            if(self.name === '' || self.address === ''){
+            if(self.name === '' || self.address === '' || self.city === '' || self.zip_code === ''){
                 return
             }
             let restaurantData = {
                 name: self.name,
                 address: self.address,
+                city: self.city,
+                zip_code: self.zip_code,
                 lat: self.coord.lat(),
                 lng: self.coord.lng()
             }
             self.name = ''
-            self.address = ''           
+            self.address = ''
+            self.city = ''
+            self.zip_code = ''           
             //self.setAddingRestaurant()
             self.$emit('formValidated', restaurantData)
             

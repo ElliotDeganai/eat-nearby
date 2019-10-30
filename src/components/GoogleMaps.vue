@@ -18,15 +18,14 @@ import { markers } from "../store/getters"; */
 export default {
   store: store,
   name: "gmaps",
-  props: ['locationsForMap'],
+  props: ["locationsForMap"],
   data() {
     return {
       coordForMap: []
-    }
+    };
   },
   methods: {
     ...Vuex.mapActions([
-      "setLocations",
       "setScreenBound",
       "clearMarkers",
       "setMarkers",
@@ -34,8 +33,7 @@ export default {
       "setGoogle",
       "setMap",
       "setMapsCenter",
-      "destroyAllMarkers",
-      "addLocation"
+      "destroyAllMarkers"
     ]),
     eventClickMarker() {
       let self = this;
@@ -46,107 +44,100 @@ export default {
           event.latLng.lat(),
           event.latLng.lng()
         );
-        if(self.addingRestaurant === false){
-          self.$emit('mapClicked', latLng)
-        }
-         
+        self.$emit("mapClicked", latLng);
       });
     },
     placeMarker(location, id, addMarker = true) {
-        let self = this
-        let map = this.map
-    let marker = new self.google.maps.Marker({
-        position: location, 
+      let self = this;
+      let map = this.map;
+      let marker = new self.google.maps.Marker({
+        position: location,
         map: map
-    })
-          self.google.maps.event.addListener(marker, 'click', function() {
-                let latLngCenter = new self.google.maps.LatLng(marker.getPosition().lat(), marker.getPosition().lng())
-                map.setCenter(latLngCenter)
-                self.setMapsCenter(latLngCenter)
-             self.$emit('markerClicked', id)
-        });
-        //self.$store.commit('SET_MARKER', marker)
-        let myMarker = new MyMarker(id, marker)
-            if (addMarker === true) {
-                self.setMarker(myMarker)
-            } 
-        //self.setMarker(marker)  
-      }, 
-      
-  eventBoundChanger(){
-    self = this
-    let map = self.map
-    map.addListener('bounds_changed', function () {
-        let tempBoundsMap = map.getBounds()
-        self.setScreenBound(tempBoundsMap)
-        self.destroyAllMarkers()
-        self.setLocations()
-        for (let coord of self.coordForMap) {
-            let markerExist = false
-            let location = { lat: coord.position.lat, lng: coord.position.lng }
-            //let marker = new self.google.maps.Marker({ position: location, map: map });
+      });
+      self.google.maps.event.addListener(marker, "click", function() {
+        let latLngCenter = new self.google.maps.LatLng(
+          marker.getPosition().lat(),
+          marker.getPosition().lng()
+        );
+        map.setCenter(latLngCenter);
+        self.setMapsCenter(latLngCenter);
+        self.$emit("markerClicked", id);
+      });
+      //self.$store.commit('SET_MARKER', marker)
+      let myMarker = new MyMarker(id, marker);
+      if (addMarker === true) {
+        self.setMarker(myMarker);
+      }
+      //self.setMarker(marker)
+    },
 
-            if(self.markers.length !== 0){
+    eventBoundChanger() {
+      self = this;
+      let map = self.map;
+      map.addListener("bounds_changed", function() {
+        let tempBoundsMap = map.getBounds();
+        self.setScreenBound(tempBoundsMap);
+        self.destroyAllMarkers();
+        //self.setLocations()
+        for (let coord of self.coordForMap) {
+          let markerExist = false;
+          let location = { lat: coord.position.lat, lng: coord.position.lng };
+          //let marker = new self.google.maps.Marker({ position: location, map: map });
+
+          if (self.markers.length !== 0) {
             for (let mark of self.markers) {
-                if (mark.id === coord.id) {
-                    markerExist = true
-                    console.log(mark.id)
-                    console.log(coord.id)
-                }
+              if (mark.id === coord.id) {
+                markerExist = true;
+              }
             }
-            }
-            let latLngCenter = new self.google.maps.LatLng(location.lat , location.lng)
-            if(markerExist === true){
-              self.placeMarker(latLngCenter, coord.id, false)
-            }else{
-              self.placeMarker(latLngCenter, coord.id)
-            }
+          }
+          let latLngCenter = new self.google.maps.LatLng(
+            location.lat,
+            location.lng
+          );
+          if (markerExist === true) {
+            self.placeMarker(latLngCenter, coord.id, false);
+          } else {
+            self.placeMarker(latLngCenter, coord.id);
+          }
         }
-        self.$emit('boundChanged')
-    });
-},
-  getLocationByCoords(coords, lat, lng){
-     return coords.filter(location => ((location.position.lat === Number(lat.toFixed(6)) || location.position.lat === Number(lat.toFixed(7)) || (location.position.lat === Number(lat))) && ((location.position.lng === Number(lng.toFixed(6))) || (location.position.lng === Number(lng.toFixed(7))) || (location.position.lng === Number(lng)))))[0]
-  }
+        self.$emit("boundChanged");
+      });
+    },
+    getLocationByCoords(coords, lat, lng) {
+      return coords.filter(
+        location =>
+          (location.position.lat === Number(lat.toFixed(6)) ||
+            location.position.lat === Number(lat.toFixed(7)) ||
+            location.position.lat === Number(lat)) &&
+          (location.position.lng === Number(lng.toFixed(6)) ||
+            location.position.lng === Number(lng.toFixed(7)) ||
+            location.position.lng === Number(lng))
+      )[0];
+    }
   },
   computed: {
     ...Vuex.mapGetters([
-      "restaurants",
-      "locations",
-      "restaurantsJson",
-      "restaurant",
-      "restaurantJson",
-      "restaurantsCount",
-      "restaurantsJsonCount",
-      "restaurantsByRating",
-      "restaurantsJsonByRating",
-      "restaurantFocus",
-      "starFrom",
-      "starTo",
-      "counterRestaurants",
       "screenBound",
       "google",
       "map",
       "markers",
-      "mapsCenter",
-      "locationByCoords",
-      "addingRestaurant"
+      "mapsCenter"
     ])
   },
-        watch : {
-        locations:function(val) {
-          let self = this
-          self.coordForMap = []
-          self.coordForMap = self.locationsForMap
-          self.destroyAllMarkers();
-          for(let coord of self.locations){
-            let location = { lat: coord.position.lat, lng: coord.position.lng }
-            self.placeMarker(location, coord.id)
+  watch: {
+    locationsForMap: function(val) {
+      let self = this;
+      self.coordForMap = [];
+      self.coordForMap = self.locationsForMap;
+      self.destroyAllMarkers();
+      for (let coord of self.coordForMap) {
+        let location = { lat: coord.position.lat, lng: coord.position.lng };
+        self.placeMarker(location, coord.id);
       }
-        }
-        }
+    }
+  },
 
-        ,
   async mounted() {
     let self = this;
     try {
@@ -194,13 +185,12 @@ export default {
           });
           map.setCenter(self.mapsCenter);
         });
-        self.eventBoundChanger()
+        self.eventBoundChanger();
       });
 
       //self.eventClickMarker();
-      self.eventClickMarker()
+      self.eventClickMarker();
       //self.addEventClickMarker()
-
     } catch (error) {
       console.error(error);
     }

@@ -9,9 +9,7 @@ const state = {
     restaurants: [],
     restaurantsJson: [],
     restaurantFocus: null,
-    starFrom: 1,
-    starTo: 5,
-    counterRestaurants: 0
+    counterRestaurants: 0,
 }
 
 // getters

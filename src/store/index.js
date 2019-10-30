@@ -2,6 +2,7 @@
 import Vuex from 'vuex'
 import restaurant from './modules/restaurant'
 import map from './modules/map'
+import map from './modules/home'
 
 Vue.use(Vuex)
 
@@ -10,7 +11,8 @@ Vue.use(Vuex)
 export default new Vuex.Store({
   modules: {
     map,
-    restaurant
+    restaurant,
+    home
   },
   strict: debug
 }) */
@@ -30,7 +32,7 @@ const state = {
     locations: [],
     screenBound: null,
     google: null,
-    maps: null,
+    map: null,
     mapsCenter: null,
     markers: [],
     starFrom: 1,

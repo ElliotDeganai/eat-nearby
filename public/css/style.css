@@ -11487,11 +11487,72 @@ video {
 }
 
 .item-list{
-  border-bottom-width: 2px;
+  border-top-width: 2px;
 }
 
 .item-list:hover{
-  background-color: #cbd5e0;
+  background-color: #edf2f7;
+}
+
+.filter-restaurant-list{
+  top: 0;
+  bottom: 0;
+  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  display: block;
+  -webkit-appearance: none;
+     -moz-appearance: none;
+          appearance: none;
+  width: 100%;
+  background-color: #fff;
+  border-width: 1px;
+  border-color: #a0aec0;
+  border-radius: 9999px;
+  padding-left: 1rem
+}
+
+.filter-box-restaurant-list{
+  margin-left: 1rem;
+  margin-right: 1rem;
+  display: inline-block;
+  position: relative;
+  width: 4rem
+}
+
+.filter-arrow-restaurant-list{
+  fill: currentColor;
+  height: 1.5rem;
+  width: 1rem;
+  border-left-width: 1px;
+  border-color: #718096
+}
+
+.filter-arrow-box-restaurant-list{
+  pointer-events: none;
+  position: absolute;
+  top: 0;
+  right: 0;
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+      -ms-flex-align: center;
+          align-items: center;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+  color: #4a5568
+}
+
+.restaurant-detail-button{
+  -webkit-box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+          box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  display: block;
+  width: 3rem;
+  height: 3rem;
+  background-color: #fff;
+  border-width: 1px;
+  border-color: #a0aec0;
+  border-radius: 9999px
 }
 
 @media (min-width: 640px) {

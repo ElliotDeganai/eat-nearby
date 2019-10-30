@@ -49,12 +49,12 @@ export const addRestaurantsJson = (store, restaurants) => {
 export const loadJsonRestaurant = (store) => {
     let listOfRestaurants = []
 
-    axios.get("http://localhost/eat-nearby/src/data/restaurant-list.json").then(response => {
+    axios.get("/data/restaurant-list.json").then(response => {
         let jsonContent = response.data
 
         for (let restaurant of jsonContent) {
 
-            let restaurantToAdd = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long)
+            let restaurantToAdd = new Restaurant(restaurant.restaurantName, restaurant.address, restaurant.lat, restaurant.long, restaurant.city, restaurant.zip_code)
             for (let rating of restaurant.ratings) {
                 let ratingToAdd = new Rating(rating.stars, rating.comment, rating.author)
                 restaurantToAdd.addRatings(ratingToAdd)

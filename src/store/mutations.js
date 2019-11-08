@@ -63,7 +63,6 @@ export const ADD_RESTAURANT = (state, restaurant) => {
             state.markers[i].marker = null;
         }
         state.markers = []
-        console.log('markers cleared')
     }
     export const SET_GOOGLE = (state, google) => {
         state.google = google
@@ -79,7 +78,6 @@ export const ADD_RESTAURANT = (state, restaurant) => {
     export const SET_MARKER = (state, marker) => {
             state.markers.push(marker)
             let log = "Marker " + marker.id + " added."
-            console.log(log)
     }
     export const DESTROY_MARKER = (state, index) => {
         state.markers[index].setMap(null)
@@ -93,7 +91,6 @@ export const DESTROY_ALL_MARKER = (state) => {
         state.markers[i].marker = null
         //state.markers = state.markers.filter(marker => restaurant.id !== id)
         let log = "Marker " + state.markers[i].id + " removed."
-        console.log(log)
     }
     state.markers = []
 }

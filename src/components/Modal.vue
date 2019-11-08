@@ -1,6 +1,6 @@
 <template>
-  <div class="modal">
-      <h2>Ajouter un élément</h2>
+  <div class="modal absolute m-32 right-0 left-0 h-3/5 w-1/2 z-10 bg-gray-400 p-8 shadow-md rounded">
+      <h2 class="mb-4 font-bold text-lg">Ajouter un élément</h2>
           <slot/>
       
   </div>
@@ -31,12 +31,6 @@ export default {
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style>
     .modal{
-        position: absolute;
-        z-index: 10;
-        background-color: beige;
-        height: 400px;
-        width: 400px;
-        top: 200px;
-        left: 300px;
+
     }
 </style>

@@ -11487,7 +11487,7 @@ video {
 }
 
 .item-list{
-  border-top-width: 2px;
+  border-top-width: 1px;
 }
 
 .item-list:hover{
@@ -11512,8 +11512,8 @@ video {
 }
 
 .filter-box-restaurant-list{
-  margin-left: 1rem;
-  margin-right: 1rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
   display: inline-block;
   position: relative;
   width: 4rem

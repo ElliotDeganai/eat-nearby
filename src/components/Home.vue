@@ -1,6 +1,6 @@
 <template>
   <div class="eat-nearby">
-    <div class="mode-maps flex" v-show="this.modeMaps">
+    <div class="mode-maps flex items-stretch" v-show="this.modeMaps">
       <div class="back-window" v-show="this.addingRestaurant"></div>
       <restaurant-list
         :restaurantsList="this.restaurants"
@@ -14,7 +14,7 @@
         @markerClicked="onMarkerClicked"
         @boundChanged="onBoundChanged"
       />
-      <modal v-show="this.addingRestaurant">
+      <modal class="" v-show="this.addingRestaurant">
         <restaurant-form :coord="newRestaurantCoord" @formValidated="onFormValidated" />
       </modal>
     </div>
@@ -126,10 +126,12 @@ export default {
   watch: {
     starTo: function(val) {
       this.setRestaurants();
+      this.setLocations();
       this.locationsForMap = this.locations;
     },
     starFrom: function(val) {
       this.setRestaurants();
+      this.setLocations();
       this.locationsForMap = this.locations;
     },
     locations: function(val) {

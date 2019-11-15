@@ -38,7 +38,7 @@ Note: Paths below are relative to the root project directory.
 
 ### 2. Win.
 1. Browse to `http://localhost:8080`.
-```
+
 
 ### Compiles and hot-reloads for development
 ```

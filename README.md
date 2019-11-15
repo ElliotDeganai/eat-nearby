@@ -1,7 +1,7 @@
 # eat-nearby
 # Launch your own restaurant review site
 ## FrontEnd Web Developer Project 7 - Openclassroom
-### JavaScript, VUE.js, Tailwind css, Google maps API, Google Places API, HTML5, CSS3
+### JavaScript, VUE.js, node.js, Tailwind css, Google maps API, Google Places API, HTML5, CSS3
 
 > This app was built with the Vue CLI.
 

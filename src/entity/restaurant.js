@@ -17,6 +17,10 @@ class Restaurant{
         this.calculateAverageRating()
     }
 
+    clearRatings(){
+        this.ratings = [];
+    }
+
     calculateAverageRating(){
         let sumRatingsStars = 0
         for(let rating of this.ratings){

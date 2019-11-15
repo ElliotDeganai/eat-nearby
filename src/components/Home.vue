@@ -1,5 +1,5 @@
 <template>
-  <div class="eat-nearby">
+  <div class="eat-nearby relative">
     <div class="mode-maps flex items-stretch" v-show="this.modeMaps">
       <div class="back-window" v-show="this.addingRestaurant"></div>
       <restaurant-list
@@ -8,7 +8,7 @@
         @focusActionned="onFocusActionned"
       />
       <br />
-      <google-maps
+      <google-maps class="w-full"
         :locationsForMap="locationsForMap"
         @mapClicked="onMapClicked"
         @markerClicked="onMarkerClicked"
@@ -99,9 +99,10 @@ export default {
         restaurantData.zip_code
       );
       restaurantToCreate.addRatings(ratingToCreate);
+      restaurantToCreate.clearRatings();
       self.addRestaurantJson(restaurantToCreate);
-      self.addLocation(location);
-      //self.addRestaurant(restaurantToCreate);
+      //self.addLocation(location);
+      self.addRestaurant(restaurantToCreate);
       self.setAddingRestaurant();
     },
     onFocusActionned() {
@@ -136,6 +137,7 @@ export default {
     },
     locations: function(val) {
       this.locationsForMap = this.locations;
+      console.log(self.locationsForMap)
     }
     /*     restaurants: {
       get() {

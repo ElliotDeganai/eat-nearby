@@ -3,6 +3,18 @@ module.exports = {
   important: false,
   separator: ':',
   theme: {
+    gradients: theme => ({
+      'topaz':      ['30deg', theme('colors.orange.500'), theme('colors.pink.400')],
+      'topaz-dark': ['30deg', theme('colors.orange.700'), theme('colors.pink.600')],
+      'emerald':    ['to right', theme('colors.green.400'), theme('colors.teal.500')],
+      'fireopal':   ['to right', '#40E0D0', '#FF8C00', '#FF0080'],
+      'blite':   ['#000000', '#FFFFFF'],
+      'relay':      ['to top left', '#3A1C71', '#D76D77', '#FFAF7B'],
+      'mono-circle': {
+        type: 'radial',
+        colors: ['circle', '#CCC', '#000']
+    },
+    }),
     screens: {
       sm: '640px',
       md: '768px',
@@ -485,7 +497,10 @@ module.exports = {
     width: ['responsive'],
     wordBreak: ['responsive'],
     zIndex: ['responsive'],
+    gradients: ['responsive', 'hover'],
   },
   corePlugins: {},
-  plugins: [],
+  plugins: [
+    require('tailwindcss-plugins/gradients'),
+  ],
 }

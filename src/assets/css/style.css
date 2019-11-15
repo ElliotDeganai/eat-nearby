@@ -17,7 +17,7 @@
 }
 
 .filter-box-restaurant-list{
-    @apply mx-2 inline-block relative w-16
+    @apply inline-block relative w-16
 }
 
 .filter-arrow-restaurant-list{

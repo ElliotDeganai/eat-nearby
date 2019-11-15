@@ -1,10 +1,12 @@
 <template>
-  <div class="restaurant flex relative h-screen" v-if="!this.modeMaps">
-    <div class="restaurant-details w-1/2 mb-4 border-solid border-r-4 border-gray-200 ">
+  <div class="restaurant flex flex-wrap relative h-screen" v-if="!this.modeMaps">
+    <div class="restaurant-details w-full sm:w-full md:w-1/2 lg:w-1/2 mb-4 border-solid border-r-4 border-gray-200 ">
       <div class="carousel-restaurant flex flex-wrap">
         <!-- <img v-bind:src="restaurant.streetViewUrl"/> -->
-        <div class="w-full">
+        <div class="w-full relative">
+          <div class="bg-blite opacity-25 absolute top-0 left-0 h-full w-full"></div>
           <img class="w-full" src="https://picsum.photos/400/100" />
+          
         </div>
         <div class="row flex w-full">
           <div class="item2 w-1/2">
@@ -40,19 +42,11 @@
         class="description-restaurant p-4 text-left text-sm">
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</p>
     </div>
-    <div class="ratings w-1/2 text-left pr-4 relative">
+    <div class="ratings w-full sm:w-full md:w-1/2 lg:w-1/2 text-left pr-4 relative">
     <div class="commentsSection max-h-screen">
       <h2 class="pl-8 pr-8 pt-8 pb-4 font-bold">Les avis</h2>
-      <ul class="overflow-y-auto max-h-auto">
-        <li class="pl-8 pr-8 pt-4 pb-4 border-t" v-bind:key="rating.name" v-for="rating in restaurant.ratings">
-          <h4>{{ rating.author }}</h4>
-          <p class="pt-2 pb-2">
-            <rating-stars :rating="rating.star"/>
-          </p>
-          <p class="text-xs pt-2 pb-2">{{ rating.comment }}</p>
-        </li>
-        </ul>
-        <div class="pl-8 pr-8 pt-4 pb-4 border-t-2 newComment h-1/2" v-show="this.showCommentForm">
+
+      <div class="pl-8 pr-8 pt-4 pb-4 border-t-2 border-b-2 newComment h-1/2" v-show="this.showCommentForm">
           <h2 class="font-bold mb-4">Ajouter un nouveau commentaire</h2>
           <div class="mb-4 w-3/5">
       <label class="block text-gray-700 text-sm mb-2" for="newPseudo">
@@ -77,22 +71,23 @@
               <option value="5">5</option>
             </select>
 
-<!--             <div class="">
-              <svg
-                class="w-4 h-4"
-                xmlns="http://www.w3.org/2000/svg"
-                viewBox="0 0 20 20"
-              >
-                <path
-                  d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"
-                />
-              </svg>
-            </div> -->
           </div>
           <div>
             <button v-on:click.prevent="addComment()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Ajouter</button>
           </div>
         </div>
+
+    <div class="overflow-y-auto h-64">
+      <ul class="flex flex-col-reverse">
+        <li class="pl-8 pr-8 pt-4 pb-4 border-t" v-bind:key="rating.name" v-for="rating in restaurant.ratings">
+          <h4>{{ rating.author }}</h4>
+          <p class="pt-2 pb-2">
+            <rating-stars :rating="rating.star"/>
+          </p>
+          <p class="text-xs pt-2 pb-2">{{ rating.comment }}</p>
+        </li>
+        </ul>
+    </div>
       
     </div>
 

@@ -19,8 +19,6 @@
 November 2019
 
 ## Project setup
-```
-## Project setup
 
 This quick guide to setting up the project.
 

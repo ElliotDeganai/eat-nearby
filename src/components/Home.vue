@@ -137,7 +137,6 @@ export default {
     },
     locations: function(val) {
       this.locationsForMap = this.locations;
-      console.log(self.locationsForMap)
     }
     /*     restaurants: {
       get() {
@@ -161,6 +160,7 @@ export default {
     this.loadJsonRestaurant();
     this.setRestaurants();
     this.locationsForMap = this.locations;
+    console.log(this.$store);
   }
 };
 </script>

@@ -33,7 +33,8 @@ export default {
       "setGoogle",
       "setMap",
       "setMapsCenter",
-      "destroyAllMarkers"
+      "destroyAllMarkers",
+      "getRestaurantSearchAPI"
     ]),
     eventClickMarker() {
       let self = this;
@@ -114,8 +115,31 @@ export default {
             location.position.lng === Number(lng.toFixed(7)) ||
             location.position.lng === Number(lng))
       )[0];
+    },
+
+/*   getRestaurantSearchAPI() {
+    let self = this;
+  var request = {
+    bounds: self.screenBound,
+    type: ['restaurant']
+  };
+
+  let service = new google.maps.places.PlacesService(self.map);
+  service.nearbySearch(request, 
+function callback(results, status) {
+    //let self = this;
+  if (status == google.maps.places.PlacesServiceStatus.OK) {
+    for (var i = 0; i < results.length; i++) {
+      console.log(results[i]);
+      //createMarker(results[i]);
     }
+  } 
+}
+  );
+} ,*/
+
   },
+
   computed: {
     ...Vuex.mapGetters([
       "screenBound",
@@ -184,6 +208,9 @@ export default {
             icon: image
           });
           map.setCenter(self.mapsCenter);
+
+          self.getRestaurantSearchAPI();
+
         });
         self.eventBoundChanger();
       });
@@ -191,6 +218,15 @@ export default {
       //self.eventClickMarker();
       self.eventClickMarker();
       //self.addEventClickMarker()
+
+/*   var request = {
+    location: self.screenBound,
+    type: ['restaurant']
+  }; */
+
+
+
+
     } catch (error) {
       console.error(error);
     }

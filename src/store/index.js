@@ -1,21 +1,22 @@
-/*import Vue from 'vue'
+/* import Vue from 'vue'
 import Vuex from 'vuex'
 import restaurant from './modules/restaurant'
 import map from './modules/map'
-import map from './modules/home'
+import home from './modules/home'
 
 Vue.use(Vuex)
 
- const debug = process.env.NODE_ENV !== 'production'
+ //const debug = process.env.NODE_ENV !== 'production'
 
-export default new Vuex.Store({
+ let store = new Vuex.Store({
   modules: {
     map,
     restaurant,
     home
   },
-  strict: debug
-}) */
+  //strict: debug
+  strict: false
+})  */
 
 import Vue from 'vue'
 import Vuex from 'vuex'

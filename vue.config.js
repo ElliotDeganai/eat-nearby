@@ -1,43 +1,26 @@
-const CopyPlugin = require('copy-webpack-plugin');
-
 module.exports = {
+  assetsDir: './assets',
   configureWebpack: {
-    // It will be merged into the final Webpack config
-    plugins: [
-      new CopyPlugin(  [
+    module: {
+      rules: [
         {
-          from: 'src/data',
-          to: 'public/'
+          test: /\.css$/,
+          exclude: /node_modules/,
+          use: [
+            // ...
+            {
+              loader: 'postcss-loader',
+              options: {
+                ident: 'postcss',
+                plugins: [
+                  require('tailwindcss'),
+                  require('autoprefixer'),
+                ],
+              },
+            },
+          ],
         }
-      ]),
-    ],
-  }
-}
-
-/* new CopyWebpackPlugin(
-  [
-    {
-      from: 'C:\\wamp\\www\\eat-nearby\\src\\data',
-      to: 'C:\\wamp\\www\\eat-nearby\\public',
-      toType: 'dir',
-      ignore: [
-        '.DS_Store'
       ]
     }
-  ]
-),
-{
-  patterns: [
-    {
-      from: 'src/data',
-      to: 'public'
-    }
-  ],
-  options: {}
-}
-],
-entry: {
-app: [
-  './src/main.js'
-]
-} */
+  }
+};

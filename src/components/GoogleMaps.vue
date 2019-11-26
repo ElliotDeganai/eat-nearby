@@ -117,7 +117,7 @@ export default {
       )[0];
     },
 
-/*   getRestaurantSearchAPI() {
+/*    getRestaurantSearchAPI() {
     let self = this;
   var request = {
     bounds: self.screenBound,
@@ -128,7 +128,7 @@ export default {
   service.nearbySearch(request, 
 function callback(results, status) {
     //let self = this;
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
+  if (status == self.google.maps.places.PlacesServiceStatus.OK) {
     for (var i = 0; i < results.length; i++) {
       console.log(results[i]);
       //createMarker(results[i]);
@@ -136,7 +136,7 @@ function callback(results, status) {
   } 
 }
   );
-} ,*/
+} , */
 
   },
 

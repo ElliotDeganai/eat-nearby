@@ -65,7 +65,8 @@ export default {
       "changeRestaurantFocusById",
       "setAddingRestaurant",
       "setModeMaps",
-      "destroyAllMarkers"
+      "destroyAllMarkers",
+      "getRestaurantSearchAPI"
     ]),
     onMapClicked(latLng) {
       let self = this;
@@ -158,6 +159,7 @@ export default {
     /*     let self = this
     self.setRestaurantsAPI() */
     this.loadJsonRestaurant();
+    //this.getRestaurantSearchAPI();
     this.setRestaurants();
     this.locationsForMap = this.locations;
     console.log(this.$store);

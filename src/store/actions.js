@@ -71,36 +71,6 @@ export const loadJsonRestaurant = (store) => {
     return listOfRestaurants
 }
 
-export const getRestaurantSearchAPI = (store) => {
-    let self = this;
-  var request = {
-    bounds: store.state.screenBound,
-    type: ['restaurant']
-  };
-let listOfRestaurants = [];
-  let service = new google.maps.places.PlacesService(store.state.map);
-  service.nearbySearch(request, 
-function callback(results, status) {
-    //let self = this;
-  if (status == google.maps.places.PlacesServiceStatus.OK) {
-    for (var i = 0; i < results.length; i++) {
-      //console.log(results[i]);
-      //createMarker(results[i]);
-      let restaurantToAdd = new Restaurant(results[i].name, results[i].formatted_address, results[i].geometry, results[i].geometry)
-/*       for (let rating of results[i].reviews) {
-          let ratingToAdd = new Rating(rating.rating, rating.text, rating.author_name)
-          restaurantToAdd.addRatings(ratingToAdd)
-      } */
-      listOfRestaurants.push(restaurantToAdd)
-      console.log(results[i].address_components);
-      
-    }
-    console.log(listOfRestaurants);
-  } 
-}
-  );
-}
-
 export const setRestaurants = (store) => {
 
     let listOfRestaurants = []
@@ -245,4 +215,41 @@ export const setAddingRestaurant = (store) => {
 }
 export const setModeMaps = (store) => {
     store.commit('SET_MODE_MAPS')
+}
+
+export const getRestaurantSearchAPI = (store) => {
+    let self = this;
+  var request = {
+    bounds: store.state.screenBound,
+    type: ['restaurant']
+  };
+
+  //var requestDetail = {placeId: store.state.screenBound};
+
+  let service = new store.state.google.maps.places.PlacesService(store.state.map);
+  service.nearbySearch(request, 
+function callback(results, status) {
+    //let self = this;
+  if (status == store.state.google.maps.places.PlacesServiceStatus.OK) {
+    //console.log(results);
+    for (var i = 0; i < results.length; i++) {
+        var requestDetail = {placeId: results[i].place_id};
+      console.log(results[i]);
+      service.getDetails(requestDetail,
+          function callback (result, status){
+            console.log(result)
+/*             let restaurantToAdd = new Restaurant(result[i].name, result[i].vicinity, result[i].geometry.location.lat(), result[i].geometry.location.lng, restaurant.city, restaurant.zip_code)
+            for (let rating of results[i].ratings) {
+                let ratingToAdd = new Rating(rating.stars, rating.comment, rating.author)
+                restaurantToAdd.addRatings(ratingToAdd)
+            }
+            listOfRestaurants.push(restaurantToAdd)
+            console.log(listOfRestaurants) */
+          }
+          );
+
+    }
+  } 
+}
+  );
 }

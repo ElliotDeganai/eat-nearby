@@ -1,0 +1,83 @@
+[
+    {
+       "restaurantName":"Bronco",
+       "address":"39 Rue des Petites Écuries",
+       "lat":48.8737815,
+       "long":2.3501649,
+       "city":"Paris",
+       "zip_code":75010,
+       "ratings":[
+          {
+             "author":"Teddy",
+             "stars":4,
+             "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+          },
+          {
+             "author":"Anatole",
+             "stars":5,
+             "comment":"Tout simplement mon restaurant préféré !"
+          }
+       ]
+    },
+    {
+       "restaurantName":"Babalou",
+       "address":"4 Rue Lamarck",
+       "lat":48.8865035,
+       "long":2.3442197,
+       "city":"Paris",
+       "zip_code":75018,
+       "ratings":[
+          {
+             "author":"Enma",
+             "stars":5,
+             "comment":"Une minuscule pizzeria délicieuse cachée juste à côté du Sacré choeur !"
+          },
+          {
+             "author":"Robin",
+             "stars":3,
+             "comment":"J'ai trouvé ça correct, sans plus"
+          }
+       ]
+    },
+    {
+      "restaurantName":"Richer",
+      "address":"2 Rue Richer",
+      "lat":48.874348,
+      "long":2.347754,
+      "city":"Paris",
+      "zip_code":75008,
+      "ratings":[
+         {
+            "author":"Leo",
+            "stars":2,
+            "comment":"Vin rouge servit chaud,nourriture passable."
+         },
+         {
+            "author":"Anatole",
+            "stars":4,
+            "comment":"Très bon, raffiné et original, prix très raisonnable."
+         }
+      ]
+   },
+
+   {
+      "restaurantName":"Restaurant 52",
+      "address":"52 Rue du Faubourg Saint-Denis",
+      "lat":48.872039, 
+      "long":2.354093,
+      "city":"Paris",
+      "zip_code":75010,
+      "ratings":[
+         {
+            "author":"Napoleon",
+            "stars":4,
+            "comment":"Un excellent restaurant, j'y reviendrai ! Par contre il vaut mieux aimer la viande."
+         },
+         {
+            "author":"Barnabé",
+            "stars":5,
+            "comment":"Tout simplement mon restaurant préféré !"
+         }
+      ]
+   }
+ ]

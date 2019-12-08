@@ -27,12 +27,15 @@ Vue.use(Vuex)
 
 const state = {
     restaurants: [],
+    rawDataRestaurants: [],
     restaurantsJson: [],
     restaurantFocus: null,
+    previousRestaurantFocus: null,
     locations: [],
     screenBound: null,
     google: null,
     map: null,
+    service: null,
     mapsCenter: null,
     markers: [],
     starFrom: 1,

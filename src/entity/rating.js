@@ -4,6 +4,5 @@ class Rating{
         this.star = star;
         this.comment = comment;
     }
-
 }
 export default Rating;

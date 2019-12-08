@@ -12,16 +12,14 @@ import MyMarker from "../entity/myMarker";
 import Vuex from "vuex";
 import axios from "axios";
 
-/* import { setTimeout } from "timers";
-import { markers } from "../store/getters"; */
-
 export default {
   store: store,
   name: "gmaps",
-  props: ["locationsForMap"],
+  props: ["locationsForMap", "markerIdForAnimation"],
   data() {
     return {
-      coordForMap: []
+      coordForMap: [],
+      idAnimation: null
     };
   },
   methods: {
@@ -32,14 +30,18 @@ export default {
       "setMarker",
       "setGoogle",
       "setMap",
+      "setService",
       "setMapsCenter",
       "destroyAllMarkers",
-      "getRestaurantSearchAPI"
+      "getRestaurantSearchAPI",
+      "clearRawDataRestaurant",
+      "addRawDataRestaurants",
+      ,
+      "setRestaurants"
     ]),
     eventClickMarker() {
       let self = this;
       let map = this.map;
-      //let location = null
       self.google.maps.event.addListener(map, "click", function(event) {
         let latLng = new self.google.maps.LatLng(
           event.latLng.lat(),
@@ -60,31 +62,35 @@ export default {
           marker.getPosition().lat(),
           marker.getPosition().lng()
         );
-        map.setCenter(latLngCenter);
-        self.setMapsCenter(latLngCenter);
         self.$emit("markerClicked", id);
       });
-      //self.$store.commit('SET_MARKER', marker)
       let myMarker = new MyMarker(id, marker);
       if (addMarker === true) {
         self.setMarker(myMarker);
       }
-      //self.setMarker(marker)
     },
-
+    toggleBounce(marker) {
+      let self = this;
+      if (
+        marker.getAnimation() !== null &&
+        marker.getAnimation() !== undefined
+      ) {
+        marker.setAnimation(null);
+      } else {
+        marker.setAnimation(self.google.maps.Animation.BOUNCE);
+      }
+    },
     eventBoundChanger() {
       self = this;
+
       let map = self.map;
       map.addListener("bounds_changed", function() {
         let tempBoundsMap = map.getBounds();
         self.setScreenBound(tempBoundsMap);
         self.destroyAllMarkers();
-        //self.setLocations()
         for (let coord of self.coordForMap) {
           let markerExist = false;
           let location = { lat: coord.position.lat, lng: coord.position.lng };
-          //let marker = new self.google.maps.Marker({ position: location, map: map });
-
           if (self.markers.length !== 0) {
             for (let mark of self.markers) {
               if (mark.id === coord.id) {
@@ -116,28 +122,67 @@ export default {
             location.position.lng === Number(lng))
       )[0];
     },
+    getMarkerById(id) {
+      let self = this;
+      return self.markers.filter(marker => marker.id === id)[0];
+    },
+    async initMap() {
+      let self = this;
+      let restaurants = [];
+      try {
+        const google = await gmapsInit();
 
-/*    getRestaurantSearchAPI() {
-    let self = this;
-  var request = {
-    bounds: self.screenBound,
-    type: ['restaurant']
-  };
+        self.setGoogle(window.google);
+        const geocoder = new window.google.maps.Geocoder();
+        const map = new window.google.maps.Map(this.$el, {
+          disableDoubleClickZoom: false
+        });
+        self.setMap(map);
+        let service = new google.maps.places.PlacesService(self.map);
+        self.setService(service);
 
-  let service = new google.maps.places.PlacesService(self.map);
-  service.nearbySearch(request, 
-function callback(results, status) {
-    //let self = this;
-  if (status == self.google.maps.places.PlacesServiceStatus.OK) {
-    for (var i = 0; i < results.length; i++) {
-      console.log(results[i]);
-      //createMarker(results[i]);
+        var uluru = { lat: -25.344, lng: 131.036 };
+
+        let infoWindow = new window.google.maps.InfoWindow();
+
+        geocoder.geocode({ address: "Paris" }, (results, status) => {
+          if (status !== "OK" || !results[0]) {
+            throw new Error(status);
+          }
+          map.fitBounds(results[0].geometry.viewport);
+          let boundsMap = map.getBounds();
+          self.setScreenBound(boundsMap);
+
+          infoWindow = new window.google.maps.InfoWindow();
+
+          infoWindow = new window.google.maps.InfoWindow();
+
+          navigator.geolocation.getCurrentPosition(function(position) {
+            var pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+            };
+
+            if (self.mapsCenter === null) {
+              self.setMapsCenter(pos);
+            }
+
+            var image =
+              "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
+            var markerPosition = new window.google.maps.Marker({
+              position: pos,
+              map: map,
+              icon: image
+            });
+            map.setCenter(self.mapsCenter);
+          });
+          self.eventBoundChanger();
+        });
+        self.eventClickMarker();
+      } catch (error) {
+        console.error(error);
+      }
     }
-  } 
-}
-  );
-} , */
-
   },
 
   computed: {
@@ -145,8 +190,12 @@ function callback(results, status) {
       "screenBound",
       "google",
       "map",
+      "service",
       "markers",
-      "mapsCenter"
+      "mapsCenter",
+      "rawDataRestaurants",
+      "restaurantFocus",
+      "previousRestaurantFocus"
     ])
   },
   watch: {
@@ -159,77 +208,33 @@ function callback(results, status) {
         let location = { lat: coord.position.lat, lng: coord.position.lng };
         self.placeMarker(location, coord.id);
       }
+    },
+    restaurantFocus: function(val) {
+      let self = this;
+      let previousMark = null;
+      if (self.previousRestaurantFocus !== null) {
+        previousMark = self.getMarkerById(self.previousRestaurantFocus.id);
+      }
+
+      self.idAnimation = self.markerIdForAnimation;
+      if (self.idAnimation !== null && self.idAnimation !== undefined) {
+        let mark = self.getMarkerById(self.idAnimation);
+        self.toggleBounce(mark.marker);
+      }
+
+      if (previousMark !== null) {
+        if (
+          previousMark.marker.getAnimation() !== null &&
+          previousMark.marker.getAnimation() !== undefined
+        ) {
+          previousMark.marker.setAnimation(null);
+        }
+      }
     }
   },
 
-  async mounted() {
-    let self = this;
-    try {
-      const google = await gmapsInit();
-
-      self.setGoogle(google);
-      const geocoder = new google.maps.Geocoder();
-      const map = new google.maps.Map(this.$el, {
-        disableDoubleClickZoom: false
-      });
-      self.setMap(map);
-
-      var uluru = { lat: -25.344, lng: 131.036 };
-
-      let infoWindow = new google.maps.InfoWindow();
-
-      geocoder.geocode({ address: "Paris" }, (results, status) => {
-        if (status !== "OK" || !results[0]) {
-          throw new Error(status);
-        }
-        map.fitBounds(results[0].geometry.viewport);
-        let boundsMap = map.getBounds();
-        self.setScreenBound(boundsMap);
-
-        infoWindow = new google.maps.InfoWindow();
-
-        infoWindow = new google.maps.InfoWindow();
-
-        navigator.geolocation.getCurrentPosition(function(position) {
-          var pos = {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude
-          };
-
-          if (self.mapsCenter === null) {
-            self.setMapsCenter(pos);
-          }
-
-          var image =
-            "https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png";
-          var markerPosition = new google.maps.Marker({
-            position: pos,
-            map: map,
-            icon: image
-          });
-          map.setCenter(self.mapsCenter);
-
-          self.getRestaurantSearchAPI();
-
-        });
-        self.eventBoundChanger();
-      });
-
-      //self.eventClickMarker();
-      self.eventClickMarker();
-      //self.addEventClickMarker()
-
-/*   var request = {
-    location: self.screenBound,
-    type: ['restaurant']
-  }; */
-
-
-
-
-    } catch (error) {
-      console.error(error);
-    }
+  mounted() {
+    this.initMap();
   }
 };
 </script>
